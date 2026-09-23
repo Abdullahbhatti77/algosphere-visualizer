@@ -10,6 +10,7 @@ dist-ssr/
 .tanstack/**
 .nitro/
 coverage/
+*.tsbuildinfo
 
 # Environment and local secrets
 .env
