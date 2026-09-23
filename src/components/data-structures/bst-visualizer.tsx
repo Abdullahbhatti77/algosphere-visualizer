@@ -87,7 +87,7 @@ function TreeCanvas({ tree, roles }: { tree: BSTree; roles: Record<number, BSTRo
               const role = roles[id];
               const st = role ? ROLE_STYLE[role] : { fill: "fill-surface", stroke: "stroke-muted-foreground" };
               return (
-                <g key={id} style={{ transform: `translate(${p.x}px, ${p.y}px)` }} className="motion-safe:transition-transform motion-safe:duration-300">
+                <g key={id} transform={`translate(${p.x}, ${p.y})`}>
                   {role === "comparing" && <circle r={BST_NODE_R + 5} className="fill-none stroke-viz-compare" strokeWidth={2} />}
                   <circle r={BST_NODE_R} className={cn(st.fill, st.stroke)} strokeWidth={role === "path" ? 3 : 1.5} strokeDasharray={"dashed" in st && st.dashed ? "4 3" : undefined} />
                   <text textAnchor="middle" dy="0.35em" className={cn("fill-foreground font-mono text-[12px] font-semibold", role === "deleted" && "line-through")}>{n.value}</text>

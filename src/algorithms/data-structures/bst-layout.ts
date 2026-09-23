@@ -24,7 +24,7 @@ export function layoutTree(tree: BSTree): BSTLayout {
     if (id === null) return;
     const n = tree.nodes[id]!;
     visit(n.left, depth + 1);
-    positions[id] = { x: PAD + rank * SPACING, y: PAD + depth * LEVEL, depth };
+    positions[id] = { x: PAD + rank * SPACING, y: PAD + 12 + depth * LEVEL, depth };
     rank++;
     maxDepth = Math.max(maxDepth, depth);
     visit(n.right, depth + 1);
@@ -33,7 +33,7 @@ export function layoutTree(tree: BSTree): BSTLayout {
   return {
     positions,
     width: Math.max(PAD * 2 + Math.max(0, rank - 1) * SPACING, 240),
-    height: PAD * 2 + maxDepth * LEVEL,
+    height: PAD * 2 + 12 + maxDepth * LEVEL,
     spacing: SPACING,
   };
 }
