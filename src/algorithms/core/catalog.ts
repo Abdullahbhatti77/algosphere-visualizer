@@ -251,7 +251,7 @@ const stackEntry: CatalogEntry = {
     category: "data-structure",
     bestTime: "O(1)",
     averageTime: "O(1)",
-    worstTime: "O(1)",
+    worstTime: "O(1) bounded, O(n) resize",
     space: "O(n)",
     description: "Array-backed: the top is always index size − 1.",
     assumptions: [
@@ -305,7 +305,7 @@ const queueEntry: CatalogEntry = {
       "Dequeue advances head modulo capacity instead of shifting items, which is what keeps it O(1).",
     ],
     operations: [
-      { operation: "Enqueue", average: "O(1)", worst: "O(1)" },
+      { operation: "Enqueue", average: "O(1)", worst: "O(1) bounded, O(n) resize" },
       { operation: "Dequeue", average: "O(1)", worst: "O(1)" },
       { operation: "Peek / front", average: "O(1)", worst: "O(1)" },
     ],
