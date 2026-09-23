@@ -86,43 +86,52 @@ export function BarChart({ step, animate }: BarChartProps) {
           return (
             <li
               key={index}
-              className="flex h-full min-w-0 flex-1 flex-col items-center justify-end gap-1"
+              className="flex h-full min-w-0 flex-1 flex-col items-center gap-1"
               aria-label={`Index ${index}, value ${value}${state === "idle" ? "" : `, ${LABELS[state]}`}`}
             >
               <span
                 aria-hidden
                 className={cn(
-                  "font-mono text-[10px] leading-none",
+                  "h-2.5 font-mono text-[10px] leading-none",
                   state === "idle" ? "text-transparent" : "text-foreground",
                 )}
               >
                 {MARKERS[state] || "·"}
               </span>
               {showValues ? (
-                <span aria-hidden className="font-mono text-[10px] leading-none text-foreground">
+                <span
+                  aria-hidden
+                  className="h-2.5 font-mono text-[10px] leading-none text-foreground"
+                >
                   {value}
                 </span>
               ) : null}
-              <span
-                aria-hidden
-                style={{
-                  height: `${(value / max) * 100}%`,
-                  ...(pattern ? { backgroundImage: pattern } : {}),
-                }}
-                className={cn(
-                  "w-full rounded-t-[3px] border-t border-black/10 dark:border-white/10",
-                  BAR_CLASSES[state],
-                  animate && "transition-[height,background-color] duration-150 ease-out",
-                  !inRange && state === "idle" && "opacity-45",
-                  state !== "idle" && "ring-1 ring-foreground/40",
-                )}
-              />
+              <span className="flex min-h-0 w-full flex-1 items-end">
+                <span
+                  aria-hidden
+                  style={{
+                    height: `${(value / max) * 100}%`,
+                    ...(pattern ? { backgroundImage: pattern } : {}),
+                  }}
+                  className={cn(
+                    "w-full rounded-t-[3px] border-t border-black/10 dark:border-white/10",
+                    BAR_CLASSES[state],
+                    animate && "transition-[height,background-color] duration-150 ease-out",
+                    !inRange && state === "idle" && "opacity-45",
+                    state !== "idle" && "ring-1 ring-foreground/40",
+                  )}
+                />
+              </span>
               {showIndices ? (
-                <span aria-hidden className="font-mono text-[10px] leading-none text-muted-foreground">
+                <span
+                  aria-hidden
+                  className="h-2.5 font-mono text-[10px] leading-none text-muted-foreground"
+                >
                   {index}
                 </span>
               ) : null}
             </li>
+
           );
         })}
       </ol>
