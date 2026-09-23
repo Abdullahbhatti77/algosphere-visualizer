@@ -10,33 +10,91 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as DataStructuresRouteImport } from './routes/data-structures'
+import { Route as GraphRouteImport } from './routes/graph'
+import { Route as PathfindingRouteImport } from './routes/pathfinding'
+import { Route as SortRouteImport } from './routes/sort'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DataStructuresRoute = DataStructuresRouteImport.update({
+  id: '/data-structures',
+  path: '/data-structures',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GraphRoute = GraphRouteImport.update({
+  id: '/graph',
+  path: '/graph',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PathfindingRoute = PathfindingRouteImport.update({
+  id: '/pathfinding',
+  path: '/pathfinding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SortRoute = SortRouteImport.update({
+  id: '/sort',
+  path: '/sort',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/data-structures': typeof DataStructuresRoute
+  '/graph': typeof GraphRoute
+  '/pathfinding': typeof PathfindingRoute
+  '/sort': typeof SortRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/data-structures': typeof DataStructuresRoute
+  '/graph': typeof GraphRoute
+  '/pathfinding': typeof PathfindingRoute
+  '/sort': typeof SortRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/data-structures': typeof DataStructuresRoute
+  '/graph': typeof GraphRoute
+  '/pathfinding': typeof PathfindingRoute
+  '/sort': typeof SortRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    '/' | '/about' | '/data-structures' | '/graph' | '/pathfinding' | '/sort'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/about' | '/data-structures' | '/graph' | '/pathfinding' | '/sort'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/data-structures'
+    | '/graph'
+    | '/pathfinding'
+    | '/sort'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  DataStructuresRoute: typeof DataStructuresRoute
+  GraphRoute: typeof GraphRoute
+  PathfindingRoute: typeof PathfindingRoute
+  SortRoute: typeof SortRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +106,51 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/data-structures': {
+      id: '/data-structures'
+      path: '/data-structures'
+      fullPath: '/data-structures'
+      preLoaderRoute: typeof DataStructuresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/graph': {
+      id: '/graph'
+      path: '/graph'
+      fullPath: '/graph'
+      preLoaderRoute: typeof GraphRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pathfinding': {
+      id: '/pathfinding'
+      path: '/pathfinding'
+      fullPath: '/pathfinding'
+      preLoaderRoute: typeof PathfindingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sort': {
+      id: '/sort'
+      path: '/sort'
+      fullPath: '/sort'
+      preLoaderRoute: typeof SortRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  DataStructuresRoute: DataStructuresRoute,
+  GraphRoute: GraphRoute,
+  PathfindingRoute: PathfindingRoute,
+  SortRoute: SortRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
