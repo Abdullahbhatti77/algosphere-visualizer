@@ -14,7 +14,7 @@ type DSId = (typeof IDS)[number];
 
 export const Route = createFileRoute("/data-structures")({
   validateSearch: (search: Record<string, unknown>): { ds?: DSId } =>
-    IDS.includes(search.ds as DSId) ? { ds: search.ds as DSId } : {},
+    IDS.includes(search["ds"] as DSId) ? { ds: search["ds"] as DSId } : {},
   head: () => ({
     meta: [
       { title },
