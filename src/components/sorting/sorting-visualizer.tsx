@@ -43,17 +43,19 @@ export function SortingVisualizer() {
   const [input, setInput] = useState<number[]>(() => defaultArray(DEFAULT_SIZE));
   const [speed, setSpeed] = useState<SpeedId>("normal");
   const reducedMotion = useReducedMotion();
+  const [mounted, setMounted] = useState(false);
 
+  useEffect(() => setMounted(true), []);
 
   const algorithm = getSortingAlgorithm(algorithmId);
 
   const { steps, generationMs } = useMemo(() => {
-    const started =
-      typeof performance === "undefined" ? Date.now() : performance.now();
+    const started = typeof performance === "undefined" ? Date.now() : performance.now();
     const generated = algorithm.generate(input);
     const ended = typeof performance === "undefined" ? Date.now() : performance.now();
     return { steps: generated, generationMs: ended - started };
   }, [algorithm, input]);
+
 
   const intervalMs = SPEED_LEVELS[speedIndexOf(speed)]!.intervalMs;
   const player = useStepPlayer(steps.length, intervalMs);
