@@ -61,7 +61,8 @@ export function SortingVisualizer() {
 
 
   const intervalMs = SPEED_LEVELS[speedIndexOf(speed)]!.intervalMs;
-  const player = useStepPlayer(steps.length, intervalMs);
+  const player = useStepPlayer(steps.length, intervalMs, `${algorithmId}:${input.join(",")}`);
+
   const step = steps[player.index] ?? EMPTY_STEP;
 
   const randomise = useCallback(() => setInput(randomArray(size)), [size]);
