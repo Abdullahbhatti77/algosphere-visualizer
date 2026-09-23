@@ -9,8 +9,9 @@ interface ExplanationPanelProps {
 
 export function ExplanationPanel({ algorithm, step }: ExplanationPanelProps) {
   return (
-    <div className="grid gap-4 lg:grid-cols-2">
-      <Card>
+    <div className="grid min-w-0 gap-4 lg:grid-cols-2">
+      <Card className="min-w-0">
+
         <CardHeader className="pb-3">
           <CardTitle className="text-sm">{algorithm.name} — overview</CardTitle>
         </CardHeader>
