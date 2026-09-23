@@ -125,7 +125,7 @@ export function SortingVisualizer() {
             stepIndex={player.index}
             totalSteps={steps.length}
             elapsedMs={player.elapsedMs}
-            generationMs={generationMs}
+            generationMs={mounted ? generationMs : null}
           />
           <ComplexityPanel algorithm={algorithm} />
           <p className="text-xs text-muted-foreground">
