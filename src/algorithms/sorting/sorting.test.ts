@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { sortingAlgorithms } from "../registry";
 
-const CASES: Record<string, number[]> = {
+const CASES = {
   random: [42, 7, 19, 3, 88, 11, 56, 4, 61, 25],
   duplicates: [5, 3, 5, 1, 3, 5, 1],
   sorted: [1, 2, 3, 4, 5, 6, 7, 8],
