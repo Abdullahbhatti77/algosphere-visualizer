@@ -324,8 +324,8 @@ const queueEntry: CatalogEntry = {
     name: "Queue",
     category: "data-structure",
     bestTime: "O(1)",
-    averageTime: "O(1)",
-    worstTime: "O(1)",
+    averageTime: "O(1) amortized enqueue",
+    worstTime: "O(1) bounded, O(n) resize",
     space: "O(n)",
     description: "Circular buffer with head index and size.",
     assumptions: [
