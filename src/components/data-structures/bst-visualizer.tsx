@@ -93,6 +93,7 @@ function TreeCanvas({ tree, roles }: { tree: BSTree; roles: Record<number, BSTRo
                   <text textAnchor="middle" dy="0.35em" className={cn("fill-foreground font-mono text-[12px] font-semibold", role === "deleted" && "line-through")}>{n.value}</text>
                   {"mark" in st && st.mark && (
                     <g transform={`translate(${BST_NODE_R - 2}, ${-BST_NODE_R + 2})`}>
+                      <title>{role}</title>
                       <circle r={7} className="fill-background stroke-foreground" strokeWidth={1} />
                       <text textAnchor="middle" dy="0.35em" className="fill-foreground text-[9px] font-bold">{st.mark}</text>
                     </g>
