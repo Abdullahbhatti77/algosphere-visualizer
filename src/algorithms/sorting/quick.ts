@@ -100,7 +100,7 @@ export const quickSort: AlgorithmDefinition = {
     worst: "O(n²)",
     space: "O(log n) average, O(n) worst",
     notes:
-      "Partitioning is in place, so the only extra space is the recursion stack: O(log n) for balanced splits, degrading to O(n) in the worst case. Because this implementation always picks the last element as the pivot, an already-sorted or reverse-sorted input triggers the O(n²) worst case — randomised or median-of-three pivots avoid it.",
+      "Partitioning is in place, so the only extra space is the recursion stack: O(log n) for balanced splits, degrading to O(n) in the worst case. Because this implementation always picks the last element as the pivot, an already-sorted or reverse-sorted input triggers the O(n²) worst case — randomised or median-of-three pivots avoid it. Heavy duplication is also a worst case here: with the strict < comparison, an all-equal array leaves every pivot at the left end, so each partition removes only one element (three-way partitioning would fix this). Best case O(n log n) assumes pivots split ranges evenly.",
   },
   practicalNotes: [
     "Fastest general-purpose comparison sort in practice thanks to cache-friendly in-place partitioning.",

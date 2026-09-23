@@ -16,9 +16,11 @@ import {
 } from "@/algorithms/pathfinding/grid";
 import { heuristics, type HeuristicId } from "@/algorithms/pathfinding/heuristics";
 import { PlaybackBar } from "@/components/viz/playback-bar";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { PseudocodePanel } from "@/components/viz/pseudocode-panel";
 import { getCatalogEntry } from "@/algorithms/core/catalog";
 import { ComplexityCard } from "@/components/viz/complexity-card";
+import { AlgorithmDocsCard } from "@/components/viz/algorithm-docs";
 import { StatsCard } from "@/components/viz/stats-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -47,6 +49,10 @@ export function AStarVisualizer() {
   const [tool, setTool] = useState<Tool>("wall");
   const [heuristic, setHeuristic] = useState<HeuristicId>("manhattan");
   const [speed, setSpeed] = useState<SpeedId>("fast");
+  const reducedMotionPref = useReducedMotion();
+  useEffect(() => {
+    if (reducedMotionPref) setSpeed("slow");
+  }, [reducedMotionPref]);
   const [cursor, setCursor] = useState<Cell>({ row: 0, col: 0 });
   const [inspect, setInspect] = useState<Cell | null>(null);
   const [mounted, setMounted] = useState(false);
@@ -371,6 +377,9 @@ export function AStarVisualizer() {
           />
           <ComplexityCard meta={getCatalogEntry("astar").complexity} />
         </aside>
+      </div>
+      <div className="mx-auto w-full max-w-7xl px-4 pb-6 sm:px-6">
+        <AlgorithmDocsCard name="A* Search" docs={getCatalogEntry("astar").docs} />
       </div>
       <PlaybackBar player={player} totalSteps={steps.length} speed={speed} onSpeedChange={setSpeed} />
     </div>

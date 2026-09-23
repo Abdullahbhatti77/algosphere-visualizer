@@ -16,7 +16,17 @@ import type { StatId } from "./stats";
 
 export type VisualizerKey = "bar-chart" | "graph" | "grid" | "bst" | "stack" | "queue";
 
+/** Student-facing documentation, rendered by one shared panel. */
+export interface AlgorithmDocs {
+  overview: string;
+  howItWorks: string[];
+  whenUseful: string[];
+  /** Implementation choices the visualisation and bounds depend on. */
+  implementationNotes: string[];
+}
+
 export interface CatalogEntry {
+  docs: AlgorithmDocs;
   id: string;
   category: AlgorithmCategory;
   displayName: string;
@@ -50,9 +60,70 @@ const sortingEntries: CatalogEntry[] = sortingAlgorithms.map((a) => ({
   },
   pseudocode: a.pseudocode,
   implementation: a.generate,
+  docs: {
+    overview: a.overview,
+    howItWorks: a.howItWorks,
+    whenUseful: a.practicalNotes,
+    implementationNotes: [a.complexity.notes],
+  },
   visualizer: "bar-chart",
   stats: ["step", "comparisons", "swaps", "accesses", "elapsed", "computeTime"],
 }));
+
+const GRAPH_DOCS: Record<"bfs" | "dfs" | "dijkstra", AlgorithmDocs> = {
+  bfs: {
+    overview: "Breadth-first search explores a graph in layers: every node one edge from the source, then every node two edges away, and so on.",
+    howItWorks: [
+      "Mark the source discovered and enqueue it.",
+      "Dequeue the front node and visit it.",
+      "For each neighbour not yet discovered, mark it discovered and enqueue it.",
+      "Repeat until the queue is empty.",
+    ],
+    whenUseful: [
+      "Shortest paths by number of edges in unweighted graphs.",
+      "Connectivity checks, bipartite testing, and level-order traversal.",
+    ],
+    implementationNotes: [
+      "Iterative with a FIFO queue; nodes are marked when enqueued, so each is enqueued at most once.",
+      "Neighbours are processed in label order, so traversal order is deterministic.",
+    ],
+  },
+  dfs: {
+    overview: "Depth-first search follows one branch as far as it can before backtracking to the most recent node with unexplored neighbours.",
+    howItWorks: [
+      "Push the source onto the stack.",
+      "Pop a node; if already visited, discard it (stale entry).",
+      "Otherwise visit it and push its unvisited neighbours.",
+      "Repeat until the stack is empty.",
+    ],
+    whenUseful: [
+      "Cycle detection, topological sorting, strongly connected components, maze generation.",
+      "Exploring every reachable node with little bookkeeping.",
+    ],
+    implementationNotes: [
+      "Explicit stack, not recursion. Neighbours are pushed in reverse label order, so visit order equals recursive DFS in label order.",
+      "A node may be pushed more than once; duplicates are skipped when popped, so the stack can hold O(E) entries.",
+    ],
+  },
+  dijkstra: {
+    overview: "Dijkstra's algorithm computes shortest-path distances from one source when every edge weight is non-negative.",
+    howItWorks: [
+      "Set dist(source) = 0 and every other distance to ∞; insert the source into a min-heap.",
+      "Extract the node with the smallest tentative distance; skip it if it is already finalized.",
+      "Finalize it and relax each outgoing edge: if dist(u) + w < dist(v), update dist(v), record u as v's predecessor, and insert v.",
+      "Stop when the heap is empty or the target is finalized; follow predecessors back for the path.",
+    ],
+    whenUseful: [
+      "Road networks, network routing and any weighted graph without negative edges.",
+      "Not suitable with negative weights — use Bellman–Ford instead.",
+    ],
+    implementationNotes: [
+      "Binary min-heap with lazy deletion rather than decrease-key.",
+      "Negative weights are rejected before running, because finalizing the closest node would no longer be safe.",
+      "Ties are broken by label for deterministic output.",
+    ],
+  },
+};
 
 const graphEntries: CatalogEntry[] = graphAlgorithms.map((a) => ({
   id: a.id,
@@ -71,6 +142,7 @@ const graphEntries: CatalogEntry[] = graphAlgorithms.map((a) => ({
   },
   pseudocode: a.pseudocode,
   implementation: a.generate,
+  docs: GRAPH_DOCS[a.id],
   visualizer: "graph",
   stats: ["step", a.id === "dijkstra" ? "processed" : "visited", "edgeChecks", "frontierOps", "elapsed", "computeTime"],
 }));
@@ -95,6 +167,25 @@ const astarEntry: CatalogEntry = {
   },
   pseudocode: ASTAR_PSEUDOCODE,
   implementation: astar,
+  docs: {
+    overview: "A* finds a shortest path from start to target by always expanding the open cell with the lowest f(n) = g(n) + h(n): the exact cost from the start plus a heuristic estimate of the remaining cost.",
+    howItWorks: [
+      "Put the start cell in the open set with g = 0.",
+      "Repeatedly remove the open cell with the smallest f (ties: larger g, then row/column order) and move it to the closed set.",
+      "If it is the target, follow parent links back to the start to reconstruct the path.",
+      "Otherwise, for each walkable neighbour, compute a tentative g; if it improves on the best known g, record the parent and (re)insert it into the open set.",
+      "If the open set empties first, no path exists.",
+    ],
+    whenUseful: [
+      "Route finding on maps and game grids when a good distance estimate is available.",
+      "With h = 0 it degenerates to Dijkstra; with an admissible, consistent heuristic it stays optimal while exploring fewer cells.",
+    ],
+    implementationNotes: [
+      "4-directional movement, every step costs 1, walls are impassable.",
+      "Manhattan distance is exact on an empty 4-neighbour grid; Euclidean is smaller or equal, so both are admissible and consistent — each cell is closed at most once.",
+      "Open set is a binary min-heap with lazy deletion (stale entries skipped when popped).",
+    ],
+  },
   visualizer: "grid",
   stats: ["step", "explored", "neighborChecks", "pathLength", "elapsed", "computeTime"],
 };
@@ -127,6 +218,24 @@ const bstEntry: CatalogEntry = {
     notation: [{ symbol: "n", meaning: "number of nodes" }, { symbol: "h", meaning: "tree height" }],
   },
   pseudocode: BST_PSEUDOCODE,
+  docs: {
+    overview: "A binary search tree keeps keys ordered so that an in-order walk visits them in sorted order. Every operation follows a single root-to-leaf path.",
+    howItWorks: [
+      "Search: compare with the current node; equal means found, smaller goes left, larger goes right; an empty child means absent.",
+      "Insert: search for the key; the empty child where the search stops is where the new node goes. Duplicates are rejected.",
+      "Delete (leaf): detach the node. Delete (one child): link the parent directly to that child.",
+      "Delete (two children): copy the in-order successor (leftmost node of the right subtree) into the node, then remove the successor, which has at most one child.",
+    ],
+    whenUseful: [
+      "Ordered sets and maps where you also need range queries, predecessor/successor or sorted iteration.",
+      "Teaching the idea behind balanced trees: this unbalanced version shows exactly why AVL and red-black trees exist.",
+    ],
+    implementationNotes: [
+      "No rebalancing — shape depends entirely on insertion order.",
+      "Keys are unique integers 0–999; the view is capped at 31 nodes to stay legible.",
+      "Deletion uses the successor, not the predecessor.",
+    ],
+  },
   implementation: { insert: bstInsert, search: bstSearch, delete: bstRemove },
   visualizer: "bst",
   stats: ["step", "treeComparisons", "size", "height", "operations"],
@@ -156,6 +265,22 @@ const stackEntry: CatalogEntry = {
     ],
   },
   pseudocode: STACK_PSEUDOCODE,
+  docs: {
+    overview: "A stack is a last-in, first-out collection: the most recently pushed item is the first one popped.",
+    howItWorks: [
+      "Push writes the value at index size and increments size.",
+      "Pop checks for emptiness (underflow), reads index size − 1, then decrements size.",
+      "Peek reads index size − 1 without changing anything.",
+    ],
+    whenUseful: [
+      "Function call stacks, undo history, expression evaluation and bracket matching.",
+      "Depth-first search — the DFS on the Graphs page uses exactly this structure.",
+    ],
+    implementationNotes: [
+      "Array-backed; the top is always index size − 1.",
+      "Bounded mode (capacity 8) reports overflow; unbounded mode is capped at 16 items for display.",
+    ],
+  },
   implementation: { push: stackPush, pop: stackPop, peek: stackPeek },
   visualizer: "stack",
   stats: ["step", "stackOps", "size", "capacity", "operations"],
@@ -186,6 +311,22 @@ const queueEntry: CatalogEntry = {
     ],
   },
   pseudocode: QUEUE_PSEUDOCODE,
+  docs: {
+    overview: "A queue is a first-in, first-out collection: items leave in the order they arrived.",
+    howItWorks: [
+      "Enqueue writes at slot (head + size) mod capacity and increments size.",
+      "Dequeue checks for emptiness (underflow), reads slot head, clears it, and advances head modulo capacity.",
+      "Front reads slot head without changing anything.",
+    ],
+    whenUseful: [
+      "Task scheduling, buffering between producers and consumers, and message queues.",
+      "Breadth-first search — the BFS on the Graphs page uses this structure.",
+    ],
+    implementationNotes: [
+      "Circular buffer: dequeue never shifts items, which is what keeps it O(1).",
+      "Unbounded mode doubles the buffer when full (one O(n) copy, amortised O(1)); bounded mode reports overflow.",
+    ],
+  },
   implementation: { enqueue, dequeue, peek: peekQueue },
   visualizer: "queue",
   stats: ["step", "queueOps", "size", "capacity", "operations"],

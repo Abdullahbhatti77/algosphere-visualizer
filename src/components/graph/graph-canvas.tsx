@@ -1,4 +1,4 @@
-import { useRef, type PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from "@/algorithms/graph/graph-model";
 import type { EdgeVisualState, Graph, GraphEdge, GraphStep, NodeVisualState } from "@/algorithms/graph/types";
@@ -41,7 +41,7 @@ const EDGE_STYLE: Record<EdgeVisualState, { stroke: string; width: number; dash?
   path: { stroke: "var(--viz-pivot)", width: 5 },
 };
 
-function edgeGeometry(graph: Graph, edge: GraphEdge) {
+function edgeGeometry(graph: Graph, edge: GraphEdge, R: number) {
   const a = graph.nodes.find((n) => n.id === edge.source)!;
   const b = graph.nodes.find((n) => n.id === edge.target)!;
   const dx = b.x - a.x;
@@ -65,6 +65,19 @@ export function GraphCanvas(props: GraphCanvasProps) {
   const { graph, step, mode, editable } = props;
   const svgRef = useRef<SVGSVGElement>(null);
   const drag = useRef<{ id: string; moved: boolean } | null>(null);
+  // On narrow screens the 800-unit canvas is drawn at a fraction of its size;
+  // enlarge nodes and labels (not positions) so they stay readable and tappable.
+  const [k, setK] = useState(1);
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(([entry]) => {
+      const w = entry?.contentRect.width ?? CANVAS_WIDTH;
+      setK(Math.min(2, Math.max(1, 560 / Math.max(w, 1))));
+    });
+    ro.observe(svg);
+    return () => ro.disconnect();
+  }, []);
 
   const toLocal = (event: { clientX: number; clientY: number }) => {
     const svg = svgRef.current;
@@ -133,7 +146,7 @@ export function GraphCanvas(props: GraphCanvasProps) {
 
       {graph.edges.map((edge) => {
         const s = EDGE_STYLE[edgeState(edge.id)];
-        const g = edgeGeometry(graph, edge);
+        const g = edgeGeometry(graph, edge, R * k);
         const selected = props.selectedEdge === edge.id;
         const head = 12;
         const arrow = `${g.x2},${g.y2} ${g.x2 - g.ux * head - g.uy * 6},${g.y2 - g.uy * head + g.ux * 6} ${g.x2 - g.ux * head + g.uy * 6},${g.y2 - g.uy * head - g.ux * 6}`;
@@ -151,9 +164,9 @@ export function GraphCanvas(props: GraphCanvasProps) {
             <line x1={g.x1} y1={g.y1} x2={g.x2} y2={g.y2} stroke={s.stroke} strokeWidth={s.width} strokeDasharray={s.dash} />
             {edge.directed && <polygon points={arrow} fill={s.stroke} />}
             {props.showWeights && (
-              <g>
-                <rect x={g.mx - 14} y={g.my - 10} width={28} height={20} rx={4} fill="var(--background)" stroke="var(--border)" />
-                <text x={g.mx} y={g.my + 4} textAnchor="middle" fontSize="12" className="font-mono" fill="var(--foreground)">
+              <g transform={`translate(${g.mx} ${g.my}) scale(${k})`}>
+                <rect x={-14} y={-10} width={28} height={20} rx={4} fill="var(--background)" stroke="var(--border)" />
+                <text x={0} y={4} textAnchor="middle" fontSize="12" className="font-mono" fill="var(--foreground)">
                   {edge.weight}
                 </text>
               </g>
@@ -170,7 +183,7 @@ export function GraphCanvas(props: GraphCanvasProps) {
         return (
           <g
             key={node.id}
-            transform={`translate(${node.x} ${node.y})`}
+            transform={`translate(${node.x} ${node.y}) scale(${k})`}
             onPointerDown={(e) => onNodePointerDown(e, node.id)}
             onPointerMove={onNodePointerMove}
             onPointerUp={(e) => onNodePointerUp(e, node.id)}

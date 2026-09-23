@@ -1,11 +1,13 @@
 import type { ReactNode } from "react";
 
+import type { AlgorithmDocs } from "@/algorithms/core/catalog";
 import type { ComplexityMeta } from "@/algorithms/core/complexity";
 import type { StatId, StatValues } from "@/algorithms/core/stats";
 import type { DSStatus } from "@/algorithms/data-structures/types";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ComplexityCard } from "@/components/viz/complexity-card";
+import { AlgorithmDocsCard } from "@/components/viz/algorithm-docs";
 import { PlaybackBar } from "@/components/viz/playback-bar";
 import { PseudocodePanel } from "@/components/viz/pseudocode-panel";
 import { StatsCard } from "@/components/viz/stats-card";
@@ -35,6 +37,8 @@ interface DSShellProps {
   contents: { label: string; text: string };
   stats: { ids: readonly StatId[]; values: StatValues; labels?: Partial<Record<StatId, string>> | undefined };
   complexity: ComplexityMeta;
+  docs: AlgorithmDocs;
+  docsName: string;
   player: StepPlayer;
   totalSteps: number;
   speed: SpeedId;
@@ -110,6 +114,9 @@ export function DSShell(props: DSShellProps) {
             Keyboard: <kbd className="font-mono">Space</kbd> play/pause, <kbd className="font-mono">←</kbd>/<kbd className="font-mono">→</kbd> step, <kbd className="font-mono">R</kbd> restart the current operation. Press <kbd className="font-mono">Enter</kbd> in a value field to run the main action.
           </p>
         </aside>
+      </div>
+      <div className="mx-auto w-full max-w-7xl px-4 pb-6 sm:px-6">
+        <AlgorithmDocsCard name={props.docsName} docs={props.docs} />
       </div>
       <PlaybackBar player={props.player} totalSteps={props.totalSteps} speed={props.speed} onSpeedChange={props.onSpeedChange} />
     </div>

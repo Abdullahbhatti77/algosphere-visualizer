@@ -1,385 +1,94 @@
-# AlgoSphere Visualizer
+# AlgoViz
 
-Build a production-quality web application called "AlgoViz" — an interactive Computer Science Algorithm Visualizer.
+An interactive visualizer that makes algorithm behaviour observable. Every frame
+on screen is a recorded state transition produced by a real implementation of
+the algorithm — nothing is pre-scripted.
 
-IMPORTANT:
-This is a serious Computer Science portfolio project. It should demonstrate algorithmic understanding, state management, animation architecture, responsive UI, accessibility, testing, and clean software engineering.
+![Sorting screenshot](docs/screenshots/sorting.png)
+![Graph screenshot](docs/screenshots/graph.png)
+![Pathfinding screenshot](docs/screenshots/pathfinding.png)
+![Data structures screenshot](docs/screenshots/data-structures.png)
 
-Do NOT build a generic educational dashboard.
-Do NOT use fake/pre-scripted animations.
-Every visualization must be generated from the actual algorithm implementation and its state transitions.
+> Screenshots are placeholders — capture them from a running build and save
+> them under `docs/screenshots/`.
 
-TECH STACK
+## Motivation
 
-Use:
+Algorithms are usually taught as pseudocode plus a complexity bound. AlgoViz
+treats them as programs you can step through: you see each comparison, each
+queue operation and each distance relaxation, alongside the pseudocode line,
+the data-structure state and the statistics the implementation actually
+counted.
 
-React
+## Supported algorithms
 
-TypeScript
+| Area | Algorithms |
+| --- | --- |
+| Sorting | Bubble Sort, Merge Sort (top-down), Quick Sort (Lomuto), Heap Sort |
+| Graphs | BFS, DFS (explicit stack), Dijkstra (binary heap, lazy deletion) |
+| Pathfinding | A* on a 4-connected grid (Manhattan / Euclidean heuristics) |
+| Data structures | Binary Search Tree (unbalanced), Stack (array-backed), Queue (circular buffer) |
 
-Vite
+## Architecture
 
-Tailwind CSS
+```text
+input -> algorithm engine -> AlgorithmStep[] -> StepController -> React view
+         (pure TS, no React)  (immutable)      (framework-free)   (SVG / DOM)
+```
 
-shadcn/ui
+- `src/algorithms/` — engines, step types, statistics, complexity catalog. No React imports.
+- `src/algorithms/core/step-controller.ts` — playback state machine (play, pause, next, previous, reset, complete, speed).
+- `src/components/` — visualizers that only read steps.
+- `src/routes/` — TanStack Router pages: `/`, `/sort`, `/graph`, `/pathfinding`, `/data-structures`, `/about`.
 
-Lucide icons
+See [docs/architecture.md](docs/architecture.md).
 
-SVG/CSS for visualizations where appropriate
+## Technologies
 
-Canvas only where it provides a clear advantage
+React 19, TanStack Start / Router, TypeScript (strict), Vite, Tailwind CSS v4,
+shadcn/ui primitives, SVG rendering, Vitest.
 
-No backend is required.
+## Design principles
 
-ARCHITECTURE
+1. Real execution drives every frame.
+2. Engines are deterministic and independent of rendering.
+3. Only meaningful statistics are shown — no placeholder zeros.
+4. Complexity claims match the implementation and state their assumptions.
+5. State is never communicated by colour alone; text summaries accompany visuals.
+6. Reduced-motion preferences are respected.
 
-Use a modular architecture separating:
+## Input limits
 
-Algorithm logic
-
-Algorithm state/step generation
-
-Visualization state
-
-Animation controller
-
-UI components
-
-The algorithm engine must NOT depend directly on React UI components.
-
-Create a generic step model such as:
-
-AlgorithmStep:
-
-type
-
-affectedIndices/nodes
-
-currentState
-
-comparisons
-
-swaps
-
-explanation
-
-optional metadata
-
-Create an animation controller supporting:
-
-play
-
-pause
-
-resume
-
-next step
-
-previous step where technically feasible
-
-restart
-
-reset
-
-skip to end
-
-speed control
-
-The UI must consume algorithm steps rather than implementing algorithm logic itself.
-
-APPLICATION STRUCTURE
-
-Routes/pages:
-
-/
-/sort
-/graph
-/pathfinding
-/data-structures
-/about
-
-Create a responsive application shell.
-
-NAVIGATION
-
-Algorithms
-Sorting
-Graphs
-Pathfinding
-Data Structures
-About
-
-DESIGN
-
-Create a polished developer/CS-education visual style.
-
-Use:
-
-clean dark/light compatible design
-
-strong typography
-
-restrained accent colors
-
-subtle borders
-
-technical UI feel
-
-clear data hierarchy
-
-compact controls
-
-professional charts
-
-Do NOT use:
-
-excessive gradients
-
-unnecessary glassmorphism
-
-fake AI branding
-
-stock illustrations
-
-oversized hero sections
-
-The visualization should be the focus.
-
-MOBILE RESPONSIVENESS
-
-The application must be fully responsive.
-
-On mobile:
-
-controls should stack intelligently
-
-visualization should remain readable
-
-horizontal overflow should be avoided where possible
-
-algorithm information should remain accessible
-
-bottom/compact controls may be used where appropriate
-
-ACCESSIBILITY
-
-Support:
-
-keyboard navigation
-
-visible focus states
-
-accessible labels
-
-semantic headings
-
-reduced-motion preference
-
-non-color indicators for algorithm states
-
-HOME PAGE
-
-Create a concise landing page containing:
-
-Title:
-"See Algorithms Think."
-
-Subtitle:
-"Interactive visualizations of sorting, graph, pathfinding, and data-structure algorithms."
-
-Show categories:
-Sorting
-Graph Algorithms
-Pathfinding
-Data Structures
-
-Include a short explanation of:
-
-step-by-step execution
-
-complexity analysis
-
-interactive input
-
-algorithm statistics
-
-SORTING PAGE
-
-Implement:
-
-Bubble Sort
-Merge Sort
-Quick Sort
-Heap Sort
-
-VISUALIZATION
-
-Use an animated vertical bar chart.
-
-Each bar represents an array value.
-
-During execution visually distinguish:
-
-active comparison
-
-swap
-
-pivot
-
-sorted region
-
-current operation
-
-Do not rely only on color; also use labels/patterns/position or other visual cues where practical.
-
-USER CONTROLS
-
-Allow:
-
-generate random array
-
-set array size
-
-enter custom comma-separated values
-
-choose algorithm
-
-play
-
-pause
-
-step forward
-
-reset
-
-speed slider
-
-Speed should support at least:
-Very Slow
-Slow
-Normal
-Fast
-Very Fast
-
-STATISTICS
-
-Display live:
-
-current step
-
-total generated steps
-
-comparisons
-
-swaps
-
-array accesses where available
-
-elapsed execution time
-
-COMPLEXITY PANEL
-
-Show for each algorithm:
-
-Bubble Sort
-Best: O(n)
-Average: O(n²)
-Worst: O(n²)
-Space: O(1)
-
-Merge Sort
-Best: O(n log n)
-Average: O(n log n)
-Worst: O(n log n)
-Space: O(n)
-
-Quick Sort
-Best: O(n log n)
-Average: O(n log n)
-Worst: O(n²)
-Space: state the actual implementation's complexity
-
-Heap Sort
-Best: O(n log n)
-Average: O(n log n)
-Worst: O(n log n)
-Space: O(1) for the standard in-place implementation
-
-Do not hard-code incorrect complexity values for a modified implementation. Document assumptions.
-
-ALGORITHM EXPLANATION
-
-Below the visualization show:
-
-algorithm overview
-
-how it works
-
-current operation explanation
-
-pseudocode
-
-complexity
-
-practical notes
-
-STEP EXPLANATION
-
-At every step, provide a short human-readable explanation such as:
-
-"Comparing positions 3 and 4."
-
-"Swapping 12 and 7."
-
-"Selecting 21 as the pivot."
-
-"Heapifying the subtree rooted at index 2."
-
-Do not generate explanations randomly. They should correspond to actual algorithm state.
-
-CODE QUALITY
-
-Use strict TypeScript.
-
-Create reusable components and types.
-
-Create reusable visualization primitives.
-
-Do not place all logic in one component.
-
-Add empty/loading/error-safe states where appropriate.
-
-Before finishing this stage, ensure:
-
-TypeScript builds
-
-sorting algorithms produce correct sorted arrays
-
-step counts are deterministic for the same input/configuration
-
-visual state matches actual algorithm state
-
-controls work correctly
-
-mobile layout works
-
-This project was built with [Lovable](https://lovable.dev).
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/b0ab6e33-3924-4677-b909-5111d770dd34).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+Limits keep playback smooth and are shown in the UI: arrays up to 60 values,
+graphs up to 26 nodes, BST up to 31 nodes, stack/queue up to 16 items.
 
 ## Development
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
+```bash
+bun install
+bun run dev
+bunx vitest run
 ```
+
+## Testing
+
+Unit and audit tests cover algorithm correctness, edge cases, step generation,
+statistics, complexity metadata, the step controller and graph-editor
+validation. See [docs/testing.md](docs/testing.md).
+
+## Complexity
+
+Summarised in [docs/complexity.md](docs/complexity.md); per-algorithm detail in
+[docs/algorithms.md](docs/algorithms.md).
+
+## Future work
+
+- Balanced trees (AVL / Red-Black), clearly labelled as such
+- Additional sorts (Insertion, Counting, Radix)
+- Bellman-Ford for graphs with negative weights
+- Diagonal movement for A*
+- Exportable step traces
+
+## License
+
+[MIT](LICENSE)

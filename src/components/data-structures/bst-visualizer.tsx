@@ -53,9 +53,9 @@ function TreeCanvas({ tree, roles }: { tree: BSTree; roles: Record<number, BSTRo
     <div className="space-y-2">
       <div className="flex items-center justify-end gap-1">
         <span className="mr-auto text-xs text-muted-foreground">Zoom {Math.round(zoom * 100)}% · scroll or swipe to pan</span>
-        <Button variant="outline" size="icon" aria-label="Zoom out" onClick={() => setZoom((z) => Math.max(0.8, +(z - 0.2).toFixed(2)))}><Minus className="size-4" /></Button>
-        <Button variant="outline" size="icon" aria-label="Fit tree to width" onClick={fit}><Maximize2 className="size-4" /></Button>
-        <Button variant="outline" size="icon" aria-label="Zoom in" onClick={() => setZoom((z) => Math.min(1.6, +(z + 0.2).toFixed(2)))}><Plus className="size-4" /></Button>
+        <Button variant="outline" size="icon" className="shrink-0" aria-label="Zoom out" onClick={() => setZoom((z) => Math.max(0.8, +(z - 0.2).toFixed(2)))}><Minus className="size-4" /></Button>
+        <Button variant="outline" size="icon" className="shrink-0" aria-label="Fit tree to width" onClick={fit}><Maximize2 className="size-4" /></Button>
+        <Button variant="outline" size="icon" className="shrink-0" aria-label="Zoom in" onClick={() => setZoom((z) => Math.min(1.6, +(z + 0.2).toFixed(2)))}><Plus className="size-4" /></Button>
       </div>
       <div ref={box} className="grid-backdrop max-h-[460px] overflow-auto rounded-md border border-border" tabIndex={0} aria-label="Tree canvas, scrollable">
         {tree.root === null ? (
@@ -201,6 +201,8 @@ export function BSTVisualizer() {
         labels: { treeComparisons: "Comparisons (this op)", operations: "Last operation", height: "Height (levels)" },
       }}
       complexity={entry.complexity}
+      docs={entry.docs}
+      docsName={entry.displayName}
       player={r.player}
       totalSteps={r.steps.length}
       speed={r.speed}

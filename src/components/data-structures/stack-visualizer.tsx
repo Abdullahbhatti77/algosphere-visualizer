@@ -137,6 +137,8 @@ export function StackVisualizer() {
         labels: { stackOps: "Primitive ops (this op)", operations: "Completed ops" },
       }}
       complexity={entry.complexity}
+      docs={entry.docs}
+      docsName={entry.displayName}
       player={r.player}
       totalSteps={r.steps.length}
       speed={r.speed}
