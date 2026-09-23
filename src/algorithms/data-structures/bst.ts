@@ -252,3 +252,20 @@ export function remove(tree: BSTree, value: number): BSTResult {
   steps.push({ state: next, roles: { ...base, [found]: "replaced" }, codeLine: 6, status: "ok", work: cmp.n, explanation: `Detach the old ${sv} node. ${tail} ${value} is gone and ordering holds.` });
   return { operation: "delete", pseudocode: lines, steps, state: next, status: "ok", value, deleteCase: "two-children" };
 }
+
+/** Inserts several values in order; their traces are concatenated. */
+export function insertMany(tree: BSTree, values: number[]): BSTResult {
+  let state = tree;
+  let offset = 0;
+  const steps: BSTStep[] = [];
+  let status: BSTResult["status"] = "ok";
+  for (const v of values) {
+    const r = insert(state, v);
+    for (const s of r.steps) steps.push({ ...s, work: s.work + offset });
+    offset += r.steps[r.steps.length - 1]!.work;
+    state = r.state;
+    if (r.status !== "ok") status = r.status;
+    if (r.status === "full") break;
+  }
+  return { operation: values.length === 1 ? "insert" : "insert ×" + values.length, pseudocode: [...BST_PSEUDOCODE.insert], steps, state, status };
+}
