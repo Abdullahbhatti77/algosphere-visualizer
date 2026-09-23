@@ -33,7 +33,7 @@ interface DSShellProps {
   pseudocode: readonly string[] | null;
   codeLine: number | undefined;
   contents: { label: string; text: string };
-  stats: { ids: readonly StatId[]; values: StatValues; labels?: Partial<Record<StatId, string>> };
+  stats: { ids: readonly StatId[]; values: StatValues; labels?: Partial<Record<StatId, string>> | undefined };
   complexity: ComplexityMeta;
   player: StepPlayer;
   totalSteps: number;

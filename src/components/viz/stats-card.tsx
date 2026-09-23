@@ -5,7 +5,7 @@ import { StatGrid } from "@/components/viz/simple-complexity";
 interface StatsCardProps {
   ids: readonly StatId[];
   values: StatValues;
-  labels?: Partial<Record<StatId, string>>;
+  labels?: Partial<Record<StatId, string>> | undefined;
 }
 
 /** Shows only the statistics an algorithm declares it tracks. */

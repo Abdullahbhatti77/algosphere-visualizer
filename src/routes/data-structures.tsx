@@ -13,9 +13,8 @@ const IDS = ["bst", "stack", "queue"] as const;
 type DSId = (typeof IDS)[number];
 
 export const Route = createFileRoute("/data-structures")({
-  validateSearch: (search: Record<string, unknown>): { ds: DSId } => ({
-    ds: IDS.includes(search.ds as DSId) ? (search.ds as DSId) : "bst",
-  }),
+  validateSearch: (search: Record<string, unknown>): { ds?: DSId } =>
+    IDS.includes(search.ds as DSId) ? { ds: search.ds as DSId } : {},
   head: () => ({
     meta: [
       { title },
@@ -30,7 +29,7 @@ export const Route = createFileRoute("/data-structures")({
 });
 
 function DataStructuresPage() {
-  const { ds } = Route.useSearch();
+  const { ds = "bst" } = Route.useSearch();
   const entries = entriesByCategory("data-structure");
   const active = entries.find((e) => e.id === ds) ?? entries[0]!;
   const Visualizer = dataStructureVisualizers[active.visualizer]!;
