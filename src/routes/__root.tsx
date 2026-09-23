@@ -14,7 +14,6 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { Button } from "@/components/ui/button";
 
-
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -135,4 +134,3 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
-

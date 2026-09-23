@@ -5,8 +5,12 @@ function Section({ title, items, ordered }: { title: string; items: string[]; or
   const List = ordered ? "ol" : "ul";
   return (
     <section className="min-w-0">
-      <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{title}</h3>
-      <List className={`${ordered ? "list-decimal" : "list-disc"} space-y-1 pl-5 text-sm leading-relaxed`}>
+      <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        {title}
+      </h3>
+      <List
+        className={`${ordered ? "list-decimal" : "list-disc"} space-y-1 pl-5 text-sm leading-relaxed`}
+      >
         {items.map((item) => (
           <li key={item}>{item}</li>
         ))}
@@ -24,7 +28,9 @@ export function AlgorithmDocsCard({ name, docs }: { name: string; docs: Algorith
       </CardHeader>
       <CardContent className="grid min-w-0 gap-5 md:grid-cols-2">
         <section className="min-w-0 md:col-span-2">
-          <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Overview</h3>
+          <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Overview
+          </h3>
           <p className="text-sm leading-relaxed">{docs.overview}</p>
         </section>
         <Section title="How it works" items={docs.howItWorks} ordered />

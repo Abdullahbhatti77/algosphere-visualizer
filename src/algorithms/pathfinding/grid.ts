@@ -55,7 +55,12 @@ export function clearWalls(grid: Grid): Grid {
 /** 4-directional neighbours in fixed order: up, right, down, left. */
 export function neighbors(grid: Grid, c: Cell): Cell[] {
   const out: Cell[] = [];
-  const deltas: [number, number][] = [[-1, 0], [0, 1], [1, 0], [0, -1]];
+  const deltas: [number, number][] = [
+    [-1, 0],
+    [0, 1],
+    [1, 0],
+    [0, -1],
+  ];
   for (const [dr, dc] of deltas) {
     const r = c.row + dr;
     const col = c.col + dc;
@@ -93,10 +98,16 @@ export function generateMaze(rows: number, cols: number, seed: number): Grid {
   while (stack.length) {
     const cur = stack[stack.length - 1]!;
     const options: [number, number][] = [];
-    for (const [dr, dc] of [[-2, 0], [0, 2], [2, 0], [0, -2]] as [number, number][]) {
+    for (const [dr, dc] of [
+      [-2, 0],
+      [0, 2],
+      [2, 0],
+      [0, -2],
+    ] as [number, number][]) {
       const r = cur.row + dr;
       const c = cur.col + dc;
-      if (r > 0 && c > 0 && r < rows - 1 && c < cols - 1 && walls[r * cols + c]) options.push([dr, dc]);
+      if (r > 0 && c > 0 && r < rows - 1 && c < cols - 1 && walls[r * cols + c])
+        options.push([dr, dc]);
     }
     if (!options.length) {
       stack.pop();

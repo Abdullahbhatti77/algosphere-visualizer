@@ -5,9 +5,19 @@
  * component, so this module never imports React. Adding an algorithm means
  * adding one entry here (plus its engine and, if new, a visualizer).
  */
-import { BST_PSEUDOCODE, insert as bstInsert, remove as bstRemove, search as bstSearch } from "../data-structures/bst";
+import {
+  BST_PSEUDOCODE,
+  insert as bstInsert,
+  remove as bstRemove,
+  search as bstSearch,
+} from "../data-structures/bst";
 import { QUEUE_PSEUDOCODE, dequeue, enqueue, peekQueue } from "../data-structures/queue";
-import { STACK_PSEUDOCODE, peek as stackPeek, pop as stackPop, push as stackPush } from "../data-structures/stack";
+import {
+  STACK_PSEUDOCODE,
+  peek as stackPeek,
+  pop as stackPop,
+  push as stackPush,
+} from "../data-structures/stack";
 import { graphAlgorithms } from "../graph/registry";
 import { ASTAR_PSEUDOCODE, astar } from "../pathfinding/astar";
 import { sortingAlgorithms } from "../registry";
@@ -35,7 +45,8 @@ export interface CatalogEntry {
   /** Single listing, or one listing per operation for data structures. */
   pseudocode: readonly string[] | Readonly<Record<string, readonly string[]>>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  implementation: ((...args: any[]) => unknown) | Readonly<Record<string, (...args: any[]) => unknown>>;
+  implementation:
+    ((...args: any[]) => unknown) | Readonly<Record<string, (...args: any[]) => unknown>>;
   visualizer: VisualizerKey;
   /** Statistics this entry genuinely tracks; nothing else is displayed. */
   stats: readonly StatId[];
@@ -72,7 +83,8 @@ const sortingEntries: CatalogEntry[] = sortingAlgorithms.map((a) => ({
 
 const GRAPH_DOCS: Record<"bfs" | "dfs" | "dijkstra", AlgorithmDocs> = {
   bfs: {
-    overview: "Breadth-first search explores a graph in layers: every node one edge from the source, then every node two edges away, and so on.",
+    overview:
+      "Breadth-first search explores a graph in layers: every node one edge from the source, then every node two edges away, and so on.",
     howItWorks: [
       "Mark the source discovered and enqueue it.",
       "Dequeue the front node and visit it.",
@@ -89,7 +101,8 @@ const GRAPH_DOCS: Record<"bfs" | "dfs" | "dijkstra", AlgorithmDocs> = {
     ],
   },
   dfs: {
-    overview: "Depth-first search follows one branch as far as it can before backtracking to the most recent node with unexplored neighbours.",
+    overview:
+      "Depth-first search follows one branch as far as it can before backtracking to the most recent node with unexplored neighbours.",
     howItWorks: [
       "Push the source onto the stack.",
       "Pop a node; if already visited, discard it (stale entry).",
@@ -106,7 +119,8 @@ const GRAPH_DOCS: Record<"bfs" | "dfs" | "dijkstra", AlgorithmDocs> = {
     ],
   },
   dijkstra: {
-    overview: "Dijkstra's algorithm computes shortest-path distances from one source when every edge weight is non-negative.",
+    overview:
+      "Dijkstra's algorithm computes shortest-path distances from one source when every edge weight is non-negative.",
     howItWorks: [
       "Set dist(source) = 0 and every other distance to ∞; insert the source into a min-heap.",
       "Extract the node with the smallest tentative distance; skip it if it is already finalized.",
@@ -144,14 +158,22 @@ const graphEntries: CatalogEntry[] = graphAlgorithms.map((a) => ({
   implementation: a.generate,
   docs: GRAPH_DOCS[a.id],
   visualizer: "graph",
-  stats: ["step", a.id === "dijkstra" ? "processed" : "visited", "edgeChecks", "frontierOps", "elapsed", "computeTime"],
+  stats: [
+    "step",
+    a.id === "dijkstra" ? "processed" : "visited",
+    "edgeChecks",
+    "frontierOps",
+    "elapsed",
+    "computeTime",
+  ],
 }));
 
 const astarEntry: CatalogEntry = {
   id: "astar",
   category: "pathfinding",
   displayName: "A* Search",
-  description: "Best-first grid search ordered by f(n) = g(n) + h(n): cost so far plus an admissible estimate of the remaining cost.",
+  description:
+    "Best-first grid search ordered by f(n) = g(n) + h(n): cost so far plus an admissible estimate of the remaining cost.",
   complexity: {
     name: "A* Search",
     category: "pathfinding",
@@ -168,7 +190,8 @@ const astarEntry: CatalogEntry = {
   pseudocode: ASTAR_PSEUDOCODE,
   implementation: astar,
   docs: {
-    overview: "A* finds a shortest path from start to target by always expanding the open cell with the lowest f(n) = g(n) + h(n): the exact cost from the start plus a heuristic estimate of the remaining cost.",
+    overview:
+      "A* finds a shortest path from start to target by always expanding the open cell with the lowest f(n) = g(n) + h(n): the exact cost from the start plus a heuristic estimate of the remaining cost.",
     howItWorks: [
       "Put the start cell in the open set with g = 0.",
       "Repeatedly remove the open cell with the smallest f (ties: larger g, then row/column order) and move it to the closed set.",
@@ -215,11 +238,15 @@ const bstEntry: CatalogEntry = {
       { operation: "Insert", average: "O(log n)", worst: "O(n)" },
       { operation: "Delete", average: "O(log n)", worst: "O(n)" },
     ],
-    notation: [{ symbol: "n", meaning: "number of nodes" }, { symbol: "h", meaning: "tree height" }],
+    notation: [
+      { symbol: "n", meaning: "number of nodes" },
+      { symbol: "h", meaning: "tree height" },
+    ],
   },
   pseudocode: BST_PSEUDOCODE,
   docs: {
-    overview: "A binary search tree keeps keys ordered so that an in-order walk visits them in sorted order. Every operation follows a single root-to-leaf path.",
+    overview:
+      "A binary search tree keeps keys ordered so that an in-order walk visits them in sorted order. Every operation follows a single root-to-leaf path.",
     howItWorks: [
       "Search: compare with the current node; equal means found, smaller goes left, larger goes right; an empty child means absent.",
       "Insert: search for the key; the empty child where the search stops is where the new node goes. Duplicates are rejected.",
@@ -245,7 +272,8 @@ const stackEntry: CatalogEntry = {
   id: "stack",
   category: "data-structure",
   displayName: "Stack",
-  description: "Last in, first out. Items are added and removed only at the top, backed here by a contiguous array plus a size counter.",
+  description:
+    "Last in, first out. Items are added and removed only at the top, backed here by a contiguous array plus a size counter.",
   complexity: {
     name: "Stack",
     category: "data-structure",
@@ -266,7 +294,8 @@ const stackEntry: CatalogEntry = {
   },
   pseudocode: STACK_PSEUDOCODE,
   docs: {
-    overview: "A stack is a last-in, first-out collection: the most recently pushed item is the first one popped.",
+    overview:
+      "A stack is a last-in, first-out collection: the most recently pushed item is the first one popped.",
     howItWorks: [
       "Push writes the value at index size and increments size.",
       "Pop checks for emptiness (underflow), reads index size − 1, then decrements size.",
@@ -290,7 +319,8 @@ const queueEntry: CatalogEntry = {
   id: "queue",
   category: "data-structure",
   displayName: "Queue",
-  description: "First in, first out. Items join at the rear and leave from the front, stored in a circular buffer so neither end ever shifts the other items.",
+  description:
+    "First in, first out. Items join at the rear and leave from the front, stored in a circular buffer so neither end ever shifts the other items.",
   complexity: {
     name: "Queue",
     category: "data-structure",

@@ -77,7 +77,9 @@ function AboutPage() {
       />
       <div className="mx-auto w-full max-w-5xl space-y-10 px-4 py-8 sm:px-6">
         <section aria-labelledby="focus" className="space-y-4">
-          <h2 id="focus" className="text-lg font-semibold tracking-tight">What the project focuses on</h2>
+          <h2 id="focus" className="text-lg font-semibold tracking-tight">
+            What the project focuses on
+          </h2>
           <div className="grid gap-4 md:grid-cols-2">
             {FOCUS.map((f) => (
               <Card key={f.heading} className="min-w-0">
@@ -93,39 +95,75 @@ function AboutPage() {
         </section>
 
         <section aria-labelledby="arch" className="space-y-3">
-          <h2 id="arch" className="text-lg font-semibold tracking-tight">Architecture</h2>
+          <h2 id="arch" className="text-lg font-semibold tracking-tight">
+            Architecture
+          </h2>
           <p className="text-sm leading-relaxed text-muted-foreground">
-            The same pipeline drives every page. Because the UI only ever reads a recorded step, what you see is guaranteed to match the code that ran.
+            The same pipeline drives every page. Because the UI only ever reads a recorded step,
+            what you see is guaranteed to match the code that ran.
           </p>
-          <pre className="overflow-x-auto rounded-md border border-border bg-surface p-4 font-mono text-xs leading-relaxed" aria-label="Architecture pipeline">
+          <pre
+            className="overflow-x-auto rounded-md border border-border bg-surface p-4 font-mono text-xs leading-relaxed"
+            aria-label="Architecture pipeline"
+          >
             {PIPELINE}
           </pre>
           <p className="text-sm text-muted-foreground">
-            Currently implemented: {counts.sorting} sorting algorithms, {counts.graph} graph algorithms, {counts.pathfinding} pathfinding algorithm and {counts.ds} data structures — all listed in one typed catalogue with their complexity metadata and documentation.
+            Currently implemented: {counts.sorting} sorting algorithms, {counts.graph} graph
+            algorithms, {counts.pathfinding} pathfinding algorithm and {counts.ds} data structures —
+            all listed in one typed catalogue with their complexity metadata and documentation.
           </p>
         </section>
 
         <section aria-labelledby="a11y" className="space-y-3">
-          <h2 id="a11y" className="text-lg font-semibold tracking-tight">Accessibility</h2>
+          <h2 id="a11y" className="text-lg font-semibold tracking-tight">
+            Accessibility
+          </h2>
           <ul className="list-disc space-y-1.5 pl-5 text-sm leading-relaxed text-muted-foreground">
-            <li>Every visual state carries a letter, symbol, outline or pattern in addition to its colour.</li>
-            <li>The current step is announced through a polite live region, and each page prints a text summary of the result.</li>
-            <li>All controls are keyboard operable with visible focus; Space, ← / → and R control playback.</li>
-            <li>With the reduced-motion preference, transitions are removed and playback starts slower; state is still conveyed through text.</li>
+            <li>
+              Every visual state carries a letter, symbol, outline or pattern in addition to its
+              colour.
+            </li>
+            <li>
+              The current step is announced through a polite live region, and each page prints a
+              text summary of the result.
+            </li>
+            <li>
+              All controls are keyboard operable with visible focus; Space, ← / → and R control
+              playback.
+            </li>
+            <li>
+              With the reduced-motion preference, transitions are removed and playback starts
+              slower; state is still conveyed through text.
+            </li>
           </ul>
         </section>
 
         <section aria-labelledby="not" className="space-y-3">
-          <h2 id="not" className="text-lg font-semibold tracking-tight">What AlgoViz is not</h2>
+          <h2 id="not" className="text-lg font-semibold tracking-tight">
+            What AlgoViz is not
+          </h2>
           <ul className="list-disc space-y-1.5 pl-5 text-sm leading-relaxed text-muted-foreground">
-            {NOT.map((n) => <li key={n}>{n}</li>)}
+            {NOT.map((n) => (
+              <li key={n}>{n}</li>
+            ))}
           </ul>
         </section>
 
         <p className="text-sm text-muted-foreground">
-          Start with <Link to="/sort" className="text-primary underline-offset-4 hover:underline">sorting</Link>, draw a graph on the{" "}
-          <Link to="/graph" className="text-primary underline-offset-4 hover:underline">graphs</Link> page, or break a tree on the{" "}
-          <Link to="/data-structures" className="text-primary underline-offset-4 hover:underline">data structures</Link> page.
+          Start with{" "}
+          <Link to="/sort" className="text-primary underline-offset-4 hover:underline">
+            sorting
+          </Link>
+          , draw a graph on the{" "}
+          <Link to="/graph" className="text-primary underline-offset-4 hover:underline">
+            graphs
+          </Link>{" "}
+          page, or break a tree on the{" "}
+          <Link to="/data-structures" className="text-primary underline-offset-4 hover:underline">
+            data structures
+          </Link>{" "}
+          page.
         </p>
       </div>
     </>

@@ -50,7 +50,11 @@ export function useStepPlayer(
   if (ref.current === null) ref.current = new StepController({ totalSteps, intervalMs });
   const controller = ref.current;
 
-  const snap = useSyncExternalStore(controller.subscribe, controller.getSnapshot, controller.getSnapshot);
+  const snap = useSyncExternalStore(
+    controller.subscribe,
+    controller.getSnapshot,
+    controller.getSnapshot,
+  );
 
   useEffect(() => {
     controller.load(totalSteps);

@@ -10,7 +10,11 @@ export function usePlaybackKeys(player: StepPlayer, extra?: (event: KeyboardEven
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement | null;
-      if (target && (/^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName) || target.closest("[data-own-keys]"))) return;
+      if (
+        target &&
+        (/^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName) || target.closest("[data-own-keys]"))
+      )
+        return;
       if (target?.getAttribute("role") === "combobox" || target?.closest("[role=listbox]")) return;
       if (event.key === " " && target?.tagName !== "BUTTON") {
         event.preventDefault();

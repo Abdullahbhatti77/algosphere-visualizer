@@ -71,12 +71,24 @@ export class StepController {
 
   getSnapshot = (): StepControllerSnapshot => this.snapshot;
 
-  get currentStep() { return this.index; }
-  get totalSteps() { return this.total; }
-  get isPlaying() { return this.status === "playing"; }
-  get isPaused() { return this.status === "paused"; }
-  get speed() { return this.interval; }
-  get state() { return this.status; }
+  get currentStep() {
+    return this.index;
+  }
+  get totalSteps() {
+    return this.total;
+  }
+  get isPlaying() {
+    return this.status === "playing";
+  }
+  get isPaused() {
+    return this.status === "paused";
+  }
+  get speed() {
+    return this.interval;
+  }
+  get state() {
+    return this.status;
+  }
 
   private get lastIndex() {
     return Math.max(0, this.total - 1);

@@ -2,9 +2,29 @@ import { describe, expect, it } from "vitest";
 
 import { algorithmRegistry, getCatalogEntry } from "../core/catalog";
 import { isBigO, validateComplexity } from "../core/complexity";
-import { buildTree, emptyTree, height, inOrder, insert, insertMany, isValidBST, preOrder, remove, search, size } from "./bst";
+import {
+  buildTree,
+  emptyTree,
+  height,
+  inOrder,
+  insert,
+  insertMany,
+  isValidBST,
+  preOrder,
+  remove,
+  search,
+  size,
+} from "./bst";
 import { layoutTree } from "./bst-layout";
-import { clearQueue, createQueue, dequeue, enqueue, peekQueue, queueValues, rearSlot } from "./queue";
+import {
+  clearQueue,
+  createQueue,
+  dequeue,
+  enqueue,
+  peekQueue,
+  queueValues,
+  rearSlot,
+} from "./queue";
 import { clearStack, createStack, peek, pop, push } from "./stack";
 
 const BASE = [50, 30, 70, 20, 40, 60, 80, 35];
@@ -37,7 +57,9 @@ describe("BST insert", () => {
     expect(height(t)).toBe(6);
   });
   it("is deterministic", () => {
-    expect(insertMany(emptyTree(), BASE).steps.length).toBe(insertMany(emptyTree(), BASE).steps.length);
+    expect(insertMany(emptyTree(), BASE).steps.length).toBe(
+      insertMany(emptyTree(), BASE).steps.length,
+    );
   });
   it("layout never overlaps nodes", () => {
     const t = buildTree(BASE);
@@ -180,8 +202,11 @@ describe("Complexity metadata", () => {
   it("stack and queue operation bounds match the implemented storage models", () => {
     for (const op of getCatalogEntry("stack").complexity.operations!) expect(op.worst).toBe("O(1)");
     const queueOps = getCatalogEntry("queue").complexity.operations!;
-    expect(queueOps.find((op) => op.operation === "Enqueue")?.worst).toBe("O(1) bounded, O(n) resize");
-    for (const op of queueOps.filter((op) => op.operation !== "Enqueue")) expect(op.worst).toBe("O(1)");
+    expect(queueOps.find((op) => op.operation === "Enqueue")?.worst).toBe(
+      "O(1) bounded, O(n) resize",
+    );
+    for (const op of queueOps.filter((op) => op.operation !== "Enqueue"))
+      expect(op.worst).toBe("O(1)");
   });
   it("isBigO rejects malformed strings", () => {
     expect(isBigO("O(n log n)")).toBe(true);

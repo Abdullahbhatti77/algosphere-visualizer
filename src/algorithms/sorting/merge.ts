@@ -8,7 +8,9 @@ import type { AlgorithmDefinition, AlgorithmStep } from "../types";
 function generate(input: readonly number[]): AlgorithmStep[] {
   const r = new StepRecorder(input);
   const n = r.values.length;
-  r.record("init", [], `Starting merge sort on ${n} element${n === 1 ? "" : "s"}.`, { codeLine: 0 });
+  r.record("init", [], `Starting merge sort on ${n} element${n === 1 ? "" : "s"}.`, {
+    codeLine: 0,
+  });
 
   const sort = (lo: number, hi: number, depth: number): void => {
     if (lo >= hi) return;

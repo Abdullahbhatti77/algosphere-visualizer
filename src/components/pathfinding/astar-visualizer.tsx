@@ -1,4 +1,12 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent, type KeyboardEvent as ReactKeyboardEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type PointerEvent as ReactPointerEvent,
+  type KeyboardEvent as ReactKeyboardEvent,
+} from "react";
 import { Brush, Eraser, Flag, MapPin, Shuffle } from "lucide-react";
 
 import { ASTAR_PSEUDOCODE, astar, type CellScore } from "@/algorithms/pathfinding/astar";
@@ -25,7 +33,13 @@ import { StatsCard } from "@/components/viz/stats-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { usePlaybackKeys } from "@/hooks/use-playback-keys";
 import { SPEED_LEVELS, speedIndexOf, useStepPlayer, type SpeedId } from "@/hooks/use-step-player";
@@ -43,7 +57,9 @@ const CELL = 24;
 
 export function AStarVisualizer() {
   const [sizeId, setSizeId] = useState<SizeId>("large");
-  const [grid, setGrid] = useState<Grid>(() => generateMaze(SIZES.large.rows, SIZES.large.cols, 20260923));
+  const [grid, setGrid] = useState<Grid>(() =>
+    generateMaze(SIZES.large.rows, SIZES.large.cols, 20260923),
+  );
   const [version, setVersion] = useState(0);
   const [seed, setSeed] = useState(20260923);
   const [tool, setTool] = useState<Tool>("wall");
@@ -72,7 +88,11 @@ export function AStarVisualizer() {
   }, [grid, heuristic]);
   const steps = result.steps;
 
-  const player = useStepPlayer(steps.length, SPEED_LEVELS[speedIndexOf(speed)]!.intervalMs, `${version}:${heuristic}`);
+  const player = useStepPlayer(
+    steps.length,
+    SPEED_LEVELS[speedIndexOf(speed)]!.intervalMs,
+    `${version}:${heuristic}`,
+  );
   usePlaybackKeys(player);
   const step = steps[player.index]!;
   const editable = player.index === 0 && !player.isPlaying;
@@ -117,7 +137,11 @@ export function AStarVisualizer() {
   const apply = (c: Cell, t: Tool) => {
     setGrid((g) => {
       const next =
-        t === "wall" ? setWall(g, c, true) : t === "erase" ? setWall(g, c, false) : setEndpoint(g, t, c);
+        t === "wall"
+          ? setWall(g, c, true)
+          : t === "erase"
+            ? setWall(g, c, false)
+            : setEndpoint(g, t, c);
       if (next !== g) setVersion((v) => v + 1);
       return next;
     });
@@ -142,11 +166,19 @@ export function AStarVisualizer() {
   const onPointerUp = () => (painting.current = null);
 
   const onGridKey = (e: ReactKeyboardEvent<SVGSVGElement>) => {
-    const moves: Record<string, [number, number]> = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] };
+    const moves: Record<string, [number, number]> = {
+      ArrowUp: [-1, 0],
+      ArrowDown: [1, 0],
+      ArrowLeft: [0, -1],
+      ArrowRight: [0, 1],
+    };
     const d = moves[e.key];
     if (d) {
       e.preventDefault();
-      const next = { row: Math.min(grid.rows - 1, Math.max(0, cursor.row + d[0])), col: Math.min(grid.cols - 1, Math.max(0, cursor.col + d[1])) };
+      const next = {
+        row: Math.min(grid.rows - 1, Math.max(0, cursor.row + d[0])),
+        col: Math.min(grid.cols - 1, Math.max(0, cursor.col + d[1])),
+      };
       setCursor(next);
       setInspect(next);
     } else if ((e.key === "Enter" || e.key === " ") && editable) {
@@ -180,8 +212,10 @@ export function AStarVisualizer() {
     if (grid.walls[r * grid.cols + c]) return { fill: "url(#wall-hatch)" };
     if (sets.path.has(k)) return { fill: "var(--viz-pivot)" };
     if (step.current === k) return { fill: "var(--viz-active)" };
-    if (sets.closed.has(k)) return { fill: "color-mix(in oklch, var(--viz-sorted) 45%, transparent)", mark: "closed" };
-    if (sets.open.has(k)) return { fill: "color-mix(in oklch, var(--viz-compare) 45%, transparent)", mark: "open" };
+    if (sets.closed.has(k))
+      return { fill: "color-mix(in oklch, var(--viz-sorted) 45%, transparent)", mark: "closed" };
+    if (sets.open.has(k))
+      return { fill: "color-mix(in oklch, var(--viz-compare) 45%, transparent)", mark: "open" };
     void cell;
     return { fill: "var(--card)" };
   };
@@ -196,15 +230,31 @@ export function AStarVisualizer() {
           <Card className="min-w-0">
             <CardContent className="space-y-3 pt-6">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <ToggleGroup type="single" value={tool} onValueChange={(v) => v && setTool(v as Tool)} aria-label="Drawing tool" className="flex-wrap justify-start" disabled={!editable}>
+                <ToggleGroup
+                  type="single"
+                  value={tool}
+                  onValueChange={(v) => v && setTool(v as Tool)}
+                  aria-label="Drawing tool"
+                  className="flex-wrap justify-start"
+                  disabled={!editable}
+                >
                   {TOOLS.map((t) => (
-                    <ToggleGroupItem key={t.id} value={t.id} aria-label={t.label} className="h-10 gap-1.5 px-3 text-xs">
+                    <ToggleGroupItem
+                      key={t.id}
+                      value={t.id}
+                      aria-label={t.label}
+                      className="h-10 gap-1.5 px-3 text-xs"
+                    >
                       <t.icon className="size-4" aria-hidden="true" />
                       {t.label}
                     </ToggleGroupItem>
                   ))}
                 </ToggleGroup>
-                {!editable && <Button size="sm" variant="secondary" onClick={player.restart}>Reset to edit</Button>}
+                {!editable && (
+                  <Button size="sm" variant="secondary" onClick={player.restart}>
+                    Reset to edit
+                  </Button>
+                )}
               </div>
               <svg
                 ref={svgRef}
@@ -222,9 +272,22 @@ export function AStarVisualizer() {
                 onKeyDown={onGridKey}
               >
                 <defs>
-                  <pattern id="wall-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                  <pattern
+                    id="wall-hatch"
+                    width="6"
+                    height="6"
+                    patternUnits="userSpaceOnUse"
+                    patternTransform="rotate(45)"
+                  >
                     <rect width="6" height="6" fill="var(--foreground)" />
-                    <line x1="0" y1="0" x2="0" y2="6" stroke="var(--muted-foreground)" strokeWidth="2" />
+                    <line
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="6"
+                      stroke="var(--muted-foreground)"
+                      strokeWidth="2"
+                    />
                   </pattern>
                 </defs>
                 {Array.from({ length: grid.rows }, (_, r) =>
@@ -232,40 +295,134 @@ export function AStarVisualizer() {
                     const { fill, mark } = cellFill(r, c);
                     return (
                       <g key={`${r}-${c}`}>
-                        <rect x={c * CELL} y={r * CELL} width={CELL} height={CELL} fill={fill} stroke="var(--border)" strokeWidth={0.5} />
-                        {mark === "open" && <circle cx={c * CELL + CELL / 2} cy={r * CELL + CELL / 2} r={3} fill="var(--foreground)" opacity={0.55} />}
-                        {mark === "closed" && <rect x={c * CELL + 9} y={r * CELL + 9} width={6} height={6} fill="var(--foreground)" opacity={0.35} />}
+                        <rect
+                          x={c * CELL}
+                          y={r * CELL}
+                          width={CELL}
+                          height={CELL}
+                          fill={fill}
+                          stroke="var(--border)"
+                          strokeWidth={0.5}
+                        />
+                        {mark === "open" && (
+                          <circle
+                            cx={c * CELL + CELL / 2}
+                            cy={r * CELL + CELL / 2}
+                            r={3}
+                            fill="var(--foreground)"
+                            opacity={0.55}
+                          />
+                        )}
+                        {mark === "closed" && (
+                          <rect
+                            x={c * CELL + 9}
+                            y={r * CELL + 9}
+                            width={6}
+                            height={6}
+                            fill="var(--foreground)"
+                            opacity={0.35}
+                          />
+                        )}
                       </g>
                     );
                   }),
                 )}
-                {[{ c: grid.start, t: "S" }, { c: grid.target, t: "T" }].map(({ c, t }) => (
+                {[
+                  { c: grid.start, t: "S" },
+                  { c: grid.target, t: "T" },
+                ].map(({ c, t }) => (
                   <g key={t}>
-                    <rect x={c.col * CELL + 2} y={c.row * CELL + 2} width={CELL - 4} height={CELL - 4} rx={4} fill="var(--primary)" />
-                    <text x={c.col * CELL + CELL / 2} y={c.row * CELL + CELL / 2 + 5} textAnchor="middle" fontSize="13" fontWeight={700} fill="var(--primary-foreground)">{t}</text>
+                    <rect
+                      x={c.col * CELL + 2}
+                      y={c.row * CELL + 2}
+                      width={CELL - 4}
+                      height={CELL - 4}
+                      rx={4}
+                      fill="var(--primary)"
+                    />
+                    <text
+                      x={c.col * CELL + CELL / 2}
+                      y={c.row * CELL + CELL / 2 + 5}
+                      textAnchor="middle"
+                      fontSize="13"
+                      fontWeight={700}
+                      fill="var(--primary-foreground)"
+                    >
+                      {t}
+                    </text>
                   </g>
                 ))}
-                {step.focus && (() => {
-                  const [r, c] = step.focus.split(",").map(Number) as [number, number];
-                  return <rect x={c * CELL + 1} y={r * CELL + 1} width={CELL - 2} height={CELL - 2} fill="none" stroke="var(--viz-swap)" strokeWidth={2.5} strokeDasharray="4 2" />;
-                })()}
-                <rect x={cursor.col * CELL} y={cursor.row * CELL} width={CELL} height={CELL} fill="none" stroke="var(--ring)" strokeWidth={2} className="grid-cursor" />
+                {step.focus &&
+                  (() => {
+                    const [r, c] = step.focus.split(",").map(Number) as [number, number];
+                    return (
+                      <rect
+                        x={c * CELL + 1}
+                        y={r * CELL + 1}
+                        width={CELL - 2}
+                        height={CELL - 2}
+                        fill="none"
+                        stroke="var(--viz-swap)"
+                        strokeWidth={2.5}
+                        strokeDasharray="4 2"
+                      />
+                    );
+                  })()}
+                <rect
+                  x={cursor.col * CELL}
+                  y={cursor.row * CELL}
+                  width={CELL}
+                  height={CELL}
+                  fill="none"
+                  stroke="var(--ring)"
+                  strokeWidth={2}
+                  className="grid-cursor"
+                />
               </svg>
-              <ul className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-muted-foreground" aria-label="Legend">
-                <li className="flex items-center gap-1.5"><span className="inline-flex size-3.5 items-center justify-center border border-border bg-viz-compare/45"><span className="size-1 rounded-full bg-foreground/60" /></span>Open set (dot)</li>
-                <li className="flex items-center gap-1.5"><span className="inline-flex size-3.5 items-center justify-center border border-border bg-viz-sorted/45"><span className="size-1.5 bg-foreground/40" /></span>Closed set (square)</li>
-                <li className="flex items-center gap-1.5"><span className="size-3.5 border border-border bg-viz-active" />Current</li>
-                <li className="flex items-center gap-1.5"><span className="size-3.5 border-2 border-dashed border-viz-swap" />Neighbor being checked</li>
-                <li className="flex items-center gap-1.5"><span className="size-3.5 border border-border bg-viz-pivot" />Path</li>
-                <li className="flex items-center gap-1.5"><span className="size-3.5 bg-foreground" />Wall (hatched)</li>
+              <ul
+                className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-muted-foreground"
+                aria-label="Legend"
+              >
+                <li className="flex items-center gap-1.5">
+                  <span className="inline-flex size-3.5 items-center justify-center border border-border bg-viz-compare/45">
+                    <span className="size-1 rounded-full bg-foreground/60" />
+                  </span>
+                  Open set (dot)
+                </li>
+                <li className="flex items-center gap-1.5">
+                  <span className="inline-flex size-3.5 items-center justify-center border border-border bg-viz-sorted/45">
+                    <span className="size-1.5 bg-foreground/40" />
+                  </span>
+                  Closed set (square)
+                </li>
+                <li className="flex items-center gap-1.5">
+                  <span className="size-3.5 border border-border bg-viz-active" />
+                  Current
+                </li>
+                <li className="flex items-center gap-1.5">
+                  <span className="size-3.5 border-2 border-dashed border-viz-swap" />
+                  Neighbor being checked
+                </li>
+                <li className="flex items-center gap-1.5">
+                  <span className="size-3.5 border border-border bg-viz-pivot" />
+                  Path
+                </li>
+                <li className="flex items-center gap-1.5">
+                  <span className="size-3.5 bg-foreground" />
+                  Wall (hatched)
+                </li>
               </ul>
-              <p className="rounded-md bg-muted px-3 py-2 text-sm" aria-live="polite">{step.explanation}</p>
+              <p className="rounded-md bg-muted px-3 py-2 text-sm" aria-live="polite">
+                {step.explanation}
+              </p>
             </CardContent>
           </Card>
 
           <div className="grid min-w-0 gap-4 md:grid-cols-2">
             <Card className="min-w-0">
-              <CardHeader className="pb-3"><CardTitle className="text-sm">Algorithm state</CardTitle></CardHeader>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm">Algorithm state</CardTitle>
+              </CardHeader>
               <CardContent className="space-y-3 text-sm">
                 <p className="font-mono text-xs">f(n) = g(n) + h(n)</p>
                 <div className="grid grid-cols-3 gap-2 font-mono text-xs">
@@ -276,49 +433,99 @@ export function AStarVisualizer() {
                     </div>
                   ))}
                 </div>
-                <p className="text-xs text-muted-foreground">Current: <span className="font-mono text-foreground">{step.current ?? "—"}</span> · Open: {step.open.length} · Closed: {step.closed.length}</p>
+                <p className="text-xs text-muted-foreground">
+                  Current: <span className="font-mono text-foreground">{step.current ?? "—"}</span>{" "}
+                  · Open: {step.open.length} · Closed: {step.closed.length}
+                </p>
                 <div>
-                  <p className="mb-1 text-xs text-muted-foreground">Open set, lowest f first (top 8)</p>
+                  <p className="mb-1 text-xs text-muted-foreground">
+                    Open set, lowest f first (top 8)
+                  </p>
                   <table className="w-full font-mono text-xs">
-                    <thead><tr className="border-b border-border text-left text-muted-foreground"><th className="font-normal">cell</th><th className="font-normal">g</th><th className="font-normal">h</th><th className="font-normal">f</th></tr></thead>
+                    <thead>
+                      <tr className="border-b border-border text-left text-muted-foreground">
+                        <th className="font-normal">cell</th>
+                        <th className="font-normal">g</th>
+                        <th className="font-normal">h</th>
+                        <th className="font-normal">f</th>
+                      </tr>
+                    </thead>
                     <tbody>
-                      {step.openPreview.length === 0 && <tr><td colSpan={4} className="text-muted-foreground">empty</td></tr>}
-                      {step.openPreview.map((o) => (<tr key={o.key}><td>{o.key}</td><td>{o.g}</td><td>{o.h}</td><td>{o.f}</td></tr>))}
+                      {step.openPreview.length === 0 && (
+                        <tr>
+                          <td colSpan={4} className="text-muted-foreground">
+                            empty
+                          </td>
+                        </tr>
+                      )}
+                      {step.openPreview.map((o) => (
+                        <tr key={o.key}>
+                          <td>{o.key}</td>
+                          <td>{o.g}</td>
+                          <td>{o.h}</td>
+                          <td>{o.f}</td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>
                 <div className="rounded-md border border-border p-2 text-xs">
-                  <p className="text-muted-foreground">Inspector (hover, or move the keyboard cursor)</p>
+                  <p className="text-muted-foreground">
+                    Inspector (hover, or move the keyboard cursor)
+                  </p>
                   {inspect ? (
                     <p className="font-mono">
                       {inspectKey}{" "}
-                      {isWall(grid, inspect) ? "wall" : inspectScore ? `g=${inspectScore.g} h=${inspectScore.h} f=${inspectScore.f}` : "not yet discovered"}
-                      {sameCell(inspect, grid.start) ? " (start)" : sameCell(inspect, grid.target) ? " (target)" : ""}
+                      {isWall(grid, inspect)
+                        ? "wall"
+                        : inspectScore
+                          ? `g=${inspectScore.g} h=${inspectScore.h} f=${inspectScore.f}`
+                          : "not yet discovered"}
+                      {sameCell(inspect, grid.start)
+                        ? " (start)"
+                        : sameCell(inspect, grid.target)
+                          ? " (target)"
+                          : ""}
                     </p>
-                  ) : <p className="font-mono">—</p>}
+                  ) : (
+                    <p className="font-mono">—</p>
+                  )}
                 </div>
               </CardContent>
             </Card>
             <Card className="min-w-0">
-              <CardHeader className="pb-3"><CardTitle className="text-sm">Pseudocode</CardTitle></CardHeader>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm">Pseudocode</CardTitle>
+              </CardHeader>
               <CardContent className="space-y-3">
                 <PseudocodePanel lines={ASTAR_PSEUDOCODE} activeLine={step.codeLine} />
                 <p className="text-xs leading-relaxed text-muted-foreground">
                   <span className="font-medium text-foreground">Implementation: </span>
-                  4-directional moves, each costing 1. Open set is a binary min-heap on f with lazy deletion; ties prefer larger g, then row/column order. Cells are expanded at most once.
+                  4-directional moves, each costing 1. Open set is a binary min-heap on f with lazy
+                  deletion; ties prefer larger g, then row/column order. Cells are expanded at most
+                  once.
                 </p>
               </CardContent>
             </Card>
           </div>
 
           <Card className="min-w-0">
-            <CardHeader className="pb-3"><CardTitle className="text-sm">Result summary</CardTitle></CardHeader>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm">Result summary</CardTitle>
+            </CardHeader>
             <CardContent className="space-y-2 text-sm">
               <p className="font-medium">{final.explanation}</p>
               {found ? (
-                <p className="text-muted-foreground">Path length {pathLen} moves from ({grid.start.row},{grid.start.col}) to ({grid.target.row},{grid.target.col}) using the {h.name} heuristic. {final.metrics.expanded} cells expanded out of {grid.walls.filter((w) => !w).length} open cells.</p>
+                <p className="text-muted-foreground">
+                  Path length {pathLen} moves from ({grid.start.row},{grid.start.col}) to (
+                  {grid.target.row},{grid.target.col}) using the {h.name} heuristic.{" "}
+                  {final.metrics.expanded} cells expanded out of{" "}
+                  {grid.walls.filter((w) => !w).length} open cells.
+                </p>
               ) : (
-                <p className="text-muted-foreground">Remove some walls around the start or target, or generate a new maze.</p>
+                <p className="text-muted-foreground">
+                  Remove some walls around the start or target, or generate a new maze.
+                </p>
               )}
             </CardContent>
           </Card>
@@ -326,14 +533,26 @@ export function AStarVisualizer() {
 
         <aside className="min-w-0 space-y-4">
           <Card className="min-w-0">
-            <CardHeader className="pb-3"><CardTitle className="text-sm">Setup</CardTitle></CardHeader>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm">Setup</CardTitle>
+            </CardHeader>
             <CardContent className="space-y-3">
               <div className="space-y-1.5">
                 <Label htmlFor="heuristic">Heuristic</Label>
-                <Select value={heuristic} onValueChange={(v) => setHeuristic(v as HeuristicId)} disabled={!editable}>
-                  <SelectTrigger id="heuristic"><SelectValue /></SelectTrigger>
+                <Select
+                  value={heuristic}
+                  onValueChange={(v) => setHeuristic(v as HeuristicId)}
+                  disabled={!editable}
+                >
+                  <SelectTrigger id="heuristic">
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent>
-                    {Object.values(heuristics).map((x) => <SelectItem key={x.id} value={x.id}>{x.name}</SelectItem>)}
+                    {Object.values(heuristics).map((x) => (
+                      <SelectItem key={x.id} value={x.id}>
+                        {x.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <p className="font-mono text-xs">{h.formula}</p>
@@ -341,20 +560,40 @@ export function AStarVisualizer() {
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="grid-size">Grid size</Label>
-                <Select value={sizeId} onValueChange={(v) => changeSize(v as SizeId)} disabled={!editable}>
-                  <SelectTrigger id="grid-size"><SelectValue /></SelectTrigger>
+                <Select
+                  value={sizeId}
+                  onValueChange={(v) => changeSize(v as SizeId)}
+                  disabled={!editable}
+                >
+                  <SelectTrigger id="grid-size">
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="small">Small ({SIZES.small.rows}×{SIZES.small.cols}) — best on phones</SelectItem>
-                    <SelectItem value="large">Large ({SIZES.large.rows}×{SIZES.large.cols})</SelectItem>
+                    <SelectItem value="small">
+                      Small ({SIZES.small.rows}×{SIZES.small.cols}) — best on phones
+                    </SelectItem>
+                    <SelectItem value="large">
+                      Large ({SIZES.large.rows}×{SIZES.large.cols})
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="grid grid-cols-2 gap-2">
-                <Button variant="outline" onClick={newMaze} disabled={!editable}><Shuffle className="size-4" /> Random maze</Button>
-                <Button variant="outline" onClick={() => update(clearWalls(grid))} disabled={!editable}>Clear grid</Button>
+                <Button variant="outline" onClick={newMaze} disabled={!editable}>
+                  <Shuffle className="size-4" /> Random maze
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => update(clearWalls(grid))}
+                  disabled={!editable}
+                >
+                  Clear grid
+                </Button>
               </div>
               <details className="rounded-md border border-border p-2 text-xs text-muted-foreground">
-                <summary className="cursor-pointer font-medium text-foreground">How to draw</summary>
+                <summary className="cursor-pointer font-medium text-foreground">
+                  How to draw
+                </summary>
                 <ul className="mt-2 list-disc space-y-1 pl-4">
                   <li>Drag across cells to draw walls; starting on a wall erases.</li>
                   <li>Set start / Set target: tap a cell to move S or T.</li>
@@ -370,7 +609,7 @@ export function AStarVisualizer() {
               step: `${player.index + 1}/${steps.length}`,
               explored: step.metrics.expanded,
               neighborChecks: step.metrics.neighborChecks,
-              pathLength: step.found ? pathLen ?? null : null,
+              pathLength: step.found ? (pathLen ?? null) : null,
               elapsed: player.elapsedMs,
               computeTime: mounted ? generationMs : null,
             }}
@@ -381,7 +620,12 @@ export function AStarVisualizer() {
       <div className="mx-auto w-full max-w-7xl px-4 pb-6 sm:px-6">
         <AlgorithmDocsCard name="A* Search" docs={getCatalogEntry("astar").docs} />
       </div>
-      <PlaybackBar player={player} totalSteps={steps.length} speed={speed} onSpeedChange={setSpeed} />
+      <PlaybackBar
+        player={player}
+        totalSteps={steps.length}
+        speed={speed}
+        onSpeedChange={setSpeed}
+      />
     </div>
   );
 }

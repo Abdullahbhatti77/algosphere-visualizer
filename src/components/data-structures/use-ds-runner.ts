@@ -14,7 +14,11 @@ export function useDSRunner<S, R extends string>(initial: () => S) {
   const [autoPlay, setAutoPlay] = useState(false);
   const [speed, setSpeed] = useState<SpeedId>("slow");
   const steps: DSStep<S, R>[] = result?.steps ?? [];
-  const player = useStepPlayer(steps.length, SPEED_LEVELS[speedIndexOf(speed)]!.intervalMs, String(runId));
+  const player = useStepPlayer(
+    steps.length,
+    SPEED_LEVELS[speedIndexOf(speed)]!.intervalMs,
+    String(runId),
+  );
 
   useEffect(() => {
     if (autoPlay && runId > 0) player.play();

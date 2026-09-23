@@ -11,7 +11,6 @@ export function ExplanationPanel({ algorithm, step }: ExplanationPanelProps) {
   return (
     <div className="grid min-w-0 gap-4 lg:grid-cols-2">
       <Card className="min-w-0">
-
         <CardHeader className="pb-3">
           <CardTitle className="text-sm">{algorithm.name} — overview</CardTitle>
         </CardHeader>
@@ -49,7 +48,6 @@ export function ExplanationPanel({ algorithm, step }: ExplanationPanelProps) {
           <CardTitle className="text-sm">Pseudocode &amp; current operation</CardTitle>
         </CardHeader>
         <CardContent className="min-w-0 space-y-3">
-
           <div className="rounded-md border border-border bg-accent/60 px-3 py-2">
             <p className="text-[11px] uppercase tracking-wide text-muted-foreground">
               Current operation

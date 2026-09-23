@@ -101,7 +101,10 @@ export function BarChart({ step, animate }: BarChartProps) {
               {showValues ? (
                 <span
                   aria-hidden
-                  className={cn("h-2.5 font-mono text-[10px] leading-none text-foreground", count > 12 && "max-sm:hidden")}
+                  className={cn(
+                    "h-2.5 font-mono text-[10px] leading-none text-foreground",
+                    count > 12 && "max-sm:hidden",
+                  )}
                 >
                   {value}
                 </span>
@@ -125,13 +128,15 @@ export function BarChart({ step, animate }: BarChartProps) {
               {showIndices ? (
                 <span
                   aria-hidden
-                  className={cn("h-2.5 font-mono text-[10px] leading-none text-muted-foreground", count > 12 && "max-sm:hidden")}
+                  className={cn(
+                    "h-2.5 font-mono text-[10px] leading-none text-muted-foreground",
+                    count > 12 && "max-sm:hidden",
+                  )}
                 >
                   {index}
                 </span>
               ) : null}
             </li>
-
           );
         })}
       </ol>

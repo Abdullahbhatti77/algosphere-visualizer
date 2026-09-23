@@ -27,7 +27,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { usePlaybackKeys } from "@/hooks/use-playback-keys";
@@ -78,7 +84,11 @@ export function GraphVisualizer() {
   const { steps, generationMs, runError } = useMemo(() => {
     const t0 = performance.now();
     if (!source || !graph.nodes.some((n) => n.id === source)) {
-      return { steps: [] as GraphStep[], generationMs: 0, runError: "Add a node and choose a source to run." };
+      return {
+        steps: [] as GraphStep[],
+        generationMs: 0,
+        runError: "Add a node and choose a source to run.",
+      };
     }
     try {
       const s = algorithm.generate(graph, { source, target: algorithm.usesTarget ? target : null });
@@ -89,7 +99,11 @@ export function GraphVisualizer() {
   }, [algorithm, graph, source, target]);
 
   const intervalMs = SPEED_LEVELS[speedIndexOf(speed)]!.intervalMs;
-  const player = useStepPlayer(steps.length, intervalMs, `${algorithmId}:${version}:${source}:${target}`);
+  const player = useStepPlayer(
+    steps.length,
+    intervalMs,
+    `${algorithmId}:${version}:${source}:${target}`,
+  );
   const step = steps[player.index] ?? null;
   const editable = player.index === 0 && !player.isPlaying;
   const displayStep = step;
@@ -152,7 +166,10 @@ export function GraphVisualizer() {
       const r = addEdge(graph, pendingFrom, id, directed, w);
       if (r.ok) {
         update(r.value);
-        setMessage({ kind: "info", text: `Added edge ${pendingFrom} ${directed ? "→" : "—"} ${id} (weight ${w}).` });
+        setMessage({
+          kind: "info",
+          text: `Added edge ${pendingFrom} ${directed ? "→" : "—"} ${id} (weight ${w}).`,
+        });
       } else setMessage({ kind: "error", text: r.error });
       setPendingFrom(null);
       return;
@@ -174,7 +191,11 @@ export function GraphVisualizer() {
 
   const applyWeight = () => {
     if (!selectedEdge) return;
-    const r = setEdgeWeight(graph, selectedEdge, weightDraft.trim() === "" ? Number.NaN : Number(weightDraft));
+    const r = setEdgeWeight(
+      graph,
+      selectedEdge,
+      weightDraft.trim() === "" ? Number.NaN : Number(weightDraft),
+    );
     if (r.ok) {
       update(r.value);
       setMessage(null);
@@ -211,7 +232,12 @@ export function GraphVisualizer() {
                   disabled={!editable}
                 >
                   {MODES.map((m) => (
-                    <ToggleGroupItem key={m.id} value={m.id} aria-label={m.label} className="h-10 gap-1.5 px-3 text-xs">
+                    <ToggleGroupItem
+                      key={m.id}
+                      value={m.id}
+                      aria-label={m.label}
+                      className="h-10 gap-1.5 px-3 text-xs"
+                    >
                       <m.icon className="size-4" aria-hidden="true" />
                       {m.label}
                     </ToggleGroupItem>
@@ -237,13 +263,19 @@ export function GraphVisualizer() {
                 onCanvasClick={onCanvasClick}
                 onNodeClick={onNodeClick}
                 onEdgeClick={onEdgeClick}
-                onNodeMove={(id, x, y) => setGraph((g) => moveNode(g, id, Math.round(x), Math.round(y)))}
+                onNodeMove={(id, x, y) =>
+                  setGraph((g) => moveNode(g, id, Math.round(x), Math.round(y)))
+                }
               />
               <GraphLegend />
               {message && (
                 <p
                   role={message.kind === "error" ? "alert" : "status"}
-                  className={message.kind === "error" ? "rounded-md border border-destructive/50 px-3 py-2 text-sm text-destructive" : "text-xs text-muted-foreground"}
+                  className={
+                    message.kind === "error"
+                      ? "rounded-md border border-destructive/50 px-3 py-2 text-sm text-destructive"
+                      : "text-xs text-muted-foreground"
+                  }
                 >
                   {message.text}
                 </p>
@@ -262,12 +294,22 @@ export function GraphVisualizer() {
               <CardContent className="space-y-3 text-sm">
                 <div>
                   <p className="mb-1 text-xs text-muted-foreground">{algorithm.frontierLabel}</p>
-                  <ol className="flex min-h-9 flex-wrap gap-1.5 rounded-md border border-border bg-surface p-1.5 font-mono text-xs" aria-label={algorithm.frontierLabel}>
-                    {(step?.frontier ?? []).length === 0 && <li className="px-1 py-1 text-muted-foreground">empty</li>}
+                  <ol
+                    className="flex min-h-9 flex-wrap gap-1.5 rounded-md border border-border bg-surface p-1.5 font-mono text-xs"
+                    aria-label={algorithm.frontierLabel}
+                  >
+                    {(step?.frontier ?? []).length === 0 && (
+                      <li className="px-1 py-1 text-muted-foreground">empty</li>
+                    )}
                     {(step?.frontier ?? []).map((f, i) => (
-                      <li key={`${f.id}-${i}`} className="rounded border border-border bg-background px-2 py-1">
+                      <li
+                        key={`${f.id}-${i}`}
+                        className="rounded border border-border bg-background px-2 py-1"
+                      >
                         {f.id}
-                        {f.priority !== undefined && <span className="text-muted-foreground">:{f.priority}</span>}
+                        {f.priority !== undefined && (
+                          <span className="text-muted-foreground">:{f.priority}</span>
+                        )}
                       </li>
                     ))}
                   </ol>
@@ -276,7 +318,9 @@ export function GraphVisualizer() {
                   <p className="mb-1 text-xs text-muted-foreground">
                     {algorithm.id === "dijkstra" ? "Finalized (visited set)" : "Traversal order"}
                   </p>
-                  <p className="font-mono text-xs">{step?.order.length ? step.order.join(" → ") : "—"}</p>
+                  <p className="font-mono text-xs">
+                    {step?.order.length ? step.order.join(" → ") : "—"}
+                  </p>
                 </div>
                 <div>
                   <p className="mb-1 text-xs text-muted-foreground">Current node</p>
@@ -299,7 +343,13 @@ export function GraphVisualizer() {
                           <td className="py-0.5">{id}</td>
                           <td>{formatDistance(step.distances![id])}</td>
                           <td>{step.predecessors?.[id] ?? "—"}</td>
-                          <td className="text-muted-foreground">{step.order.includes(id) ? "final" : step.nodeStates[id] === "queued" ? "in heap" : "—"}</td>
+                          <td className="text-muted-foreground">
+                            {step.order.includes(id)
+                              ? "final"
+                              : step.nodeStates[id] === "queued"
+                                ? "in heap"
+                                : "—"}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -330,7 +380,8 @@ export function GraphVisualizer() {
               <p className="font-medium">{runError ?? final?.explanation}</p>
               {final && algorithm.id !== "dijkstra" && (
                 <p className="text-muted-foreground">
-                  Visited {final.order.length} of {graph.nodes.length} nodes after examining {final.metrics.edgeChecks} edge endpoints.
+                  Visited {final.order.length} of {graph.nodes.length} nodes after examining{" "}
+                  {final.metrics.edgeChecks} edge endpoints.
                 </p>
               )}
             </CardContent>
@@ -346,10 +397,14 @@ export function GraphVisualizer() {
               <div className="space-y-1.5">
                 <Label htmlFor="graph-algorithm">Algorithm</Label>
                 <Select value={algorithmId} onValueChange={setAlgorithmId}>
-                  <SelectTrigger id="graph-algorithm"><SelectValue /></SelectTrigger>
+                  <SelectTrigger id="graph-algorithm">
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent>
                     {graphAlgorithms.map((a) => (
-                      <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>
+                      <SelectItem key={a.id} value={a.id}>
+                        {a.name}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -358,26 +413,52 @@ export function GraphVisualizer() {
               <div className="grid grid-cols-2 gap-2">
                 <div className="space-y-1.5">
                   <Label htmlFor="graph-source">Source</Label>
-                  <Select value={source ?? NONE} onValueChange={(v) => setSource(v === NONE ? null : v)} disabled={!editable}>
-                    <SelectTrigger id="graph-source"><SelectValue /></SelectTrigger>
+                  <Select
+                    value={source ?? NONE}
+                    onValueChange={(v) => setSource(v === NONE ? null : v)}
+                    disabled={!editable}
+                  >
+                    <SelectTrigger id="graph-source">
+                      <SelectValue />
+                    </SelectTrigger>
                     <SelectContent>
                       {labels.length === 0 && <SelectItem value={NONE}>No nodes</SelectItem>}
-                      {labels.map((id) => <SelectItem key={id} value={id}>{id}</SelectItem>)}
+                      {labels.map((id) => (
+                        <SelectItem key={id} value={id}>
+                          {id}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="graph-target">Target</Label>
-                  <Select value={target ?? NONE} onValueChange={(v) => setTarget(v === NONE ? null : v)} disabled={!editable || !algorithm.usesTarget}>
-                    <SelectTrigger id="graph-target"><SelectValue /></SelectTrigger>
+                  <Select
+                    value={target ?? NONE}
+                    onValueChange={(v) => setTarget(v === NONE ? null : v)}
+                    disabled={!editable || !algorithm.usesTarget}
+                  >
+                    <SelectTrigger id="graph-target">
+                      <SelectValue />
+                    </SelectTrigger>
                     <SelectContent>
                       <SelectItem value={NONE}>None (all)</SelectItem>
-                      {labels.filter((id) => id !== source).map((id) => <SelectItem key={id} value={id}>{id}</SelectItem>)}
+                      {labels
+                        .filter((id) => id !== source)
+                        .map((id) => (
+                          <SelectItem key={id} value={id}>
+                            {id}
+                          </SelectItem>
+                        ))}
                     </SelectContent>
                   </Select>
                 </div>
               </div>
-              {!algorithm.usesTarget && <p className="text-xs text-muted-foreground">Traversals visit everything reachable; no target needed.</p>}
+              {!algorithm.usesTarget && (
+                <p className="text-xs text-muted-foreground">
+                  Traversals visit everything reachable; no target needed.
+                </p>
+              )}
             </CardContent>
           </Card>
 
@@ -388,16 +469,30 @@ export function GraphVisualizer() {
             <CardContent className="space-y-3">
               <div className="flex items-center justify-between gap-2">
                 <Label htmlFor="graph-directed">Directed edges</Label>
-                <Switch id="graph-directed" checked={directed} onCheckedChange={toggleDirected} disabled={!editable} />
+                <Switch
+                  id="graph-directed"
+                  checked={directed}
+                  onCheckedChange={toggleDirected}
+                  disabled={!editable}
+                />
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="new-weight">Weight for new edges</Label>
-                <Input id="new-weight" type="number" min={0} inputMode="numeric" value={newWeight} onChange={(e) => setNewWeight(e.target.value)} disabled={!editable} />
+                <Input
+                  id="new-weight"
+                  type="number"
+                  min={0}
+                  inputMode="numeric"
+                  value={newWeight}
+                  onChange={(e) => setNewWeight(e.target.value)}
+                  disabled={!editable}
+                />
               </div>
               {selectedEdgeObj && (
                 <div className="space-y-1.5 rounded-md border border-border p-2">
                   <Label htmlFor="edge-weight">
-                    Weight of {selectedEdgeObj.source} {selectedEdgeObj.directed ? "→" : "—"} {selectedEdgeObj.target}
+                    Weight of {selectedEdgeObj.source} {selectedEdgeObj.directed ? "→" : "—"}{" "}
+                    {selectedEdgeObj.target}
                   </Label>
                   <div className="flex gap-2">
                     <Input
@@ -409,29 +504,68 @@ export function GraphVisualizer() {
                       onKeyDown={(e) => e.key === "Enter" && applyWeight()}
                       disabled={!editable}
                     />
-                    <Button onClick={applyWeight} disabled={!editable}>Set</Button>
+                    <Button onClick={applyWeight} disabled={!editable}>
+                      Set
+                    </Button>
                   </div>
                 </div>
               )}
               <div className="grid grid-cols-2 gap-2">
-                <Button variant="outline" onClick={deleteSelection} disabled={!editable || (!selectedNode && !selectedEdge)}>
+                <Button
+                  variant="outline"
+                  onClick={deleteSelection}
+                  disabled={!editable || (!selectedNode && !selectedEdge)}
+                >
                   <Trash2 className="size-4" /> Delete selected
                 </Button>
-                <Button variant="outline" onClick={() => { update(emptyGraph()); setMessage({ kind: "info", text: "Graph cleared. Choose Add node and click the canvas." }); }} disabled={!editable}>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    update(emptyGraph());
+                    setMessage({
+                      kind: "info",
+                      text: "Graph cleared. Choose Add node and click the canvas.",
+                    });
+                  }}
+                  disabled={!editable}
+                >
                   Clear graph
                 </Button>
-                <Button variant="outline" className="col-span-2" onClick={() => { update(sampleGraph(directed)); setSource("A"); setTarget("G"); setMessage(null); }} disabled={!editable}>
+                <Button
+                  variant="outline"
+                  className="col-span-2"
+                  onClick={() => {
+                    update(sampleGraph(directed));
+                    setSource("A");
+                    setTarget("G");
+                    setMessage(null);
+                  }}
+                  disabled={!editable}
+                >
                   <Shapes className="size-4" /> Sample graph
                 </Button>
               </div>
               <details className="rounded-md border border-border p-2 text-xs text-muted-foreground">
-                <summary className="cursor-pointer font-medium text-foreground">How to edit</summary>
+                <summary className="cursor-pointer font-medium text-foreground">
+                  How to edit
+                </summary>
                 <ul className="mt-2 list-disc space-y-1 pl-4">
-                  <li><b>Move</b>: drag nodes; tap a node or edge to select it (edges show their weight).</li>
-                  <li><b>Add node</b>: tap empty canvas. Labels run A–Z (max 26).</li>
-                  <li><b>Add edge</b>: tap the first node, then the second. Uses the weight above.</li>
-                  <li><b>Delete</b>: tap a node or edge, or select it and press Delete.</li>
-                  <li>Self-loops, duplicate edges, and negative or non-numeric weights are rejected.</li>
+                  <li>
+                    <b>Move</b>: drag nodes; tap a node or edge to select it (edges show their
+                    weight).
+                  </li>
+                  <li>
+                    <b>Add node</b>: tap empty canvas. Labels run A–Z (max 26).
+                  </li>
+                  <li>
+                    <b>Add edge</b>: tap the first node, then the second. Uses the weight above.
+                  </li>
+                  <li>
+                    <b>Delete</b>: tap a node or edge, or select it and press Delete.
+                  </li>
+                  <li>
+                    Self-loops, duplicate edges, and negative or non-numeric weights are rejected.
+                  </li>
                   <li>Editing is locked while a run is in progress — press Reset to edit.</li>
                 </ul>
               </details>
@@ -454,19 +588,29 @@ export function GraphVisualizer() {
           {algorithm.id === "dijkstra" && (
             <Alert>
               <AlertDescription className="text-xs">
-                Negative weights are rejected. Dijkstra treats the closest unfinalized node as final; a negative edge found later could still shorten that path, so the result would be wrong. Use Bellman–Ford for negative weights.
+                Negative weights are rejected. Dijkstra treats the closest unfinalized node as
+                final; a negative edge found later could still shorten that path, so the result
+                would be wrong. Use Bellman–Ford for negative weights.
               </AlertDescription>
             </Alert>
           )}
           <p className="text-xs text-muted-foreground">
-            Keyboard: <kbd className="font-mono">Space</kbd> play/pause, <kbd className="font-mono">←</kbd>/<kbd className="font-mono">→</kbd> step, <kbd className="font-mono">R</kbd> restart, <kbd className="font-mono">Delete</kbd> remove selection, <kbd className="font-mono">Esc</kbd> cancel.
+            Keyboard: <kbd className="font-mono">Space</kbd> play/pause,{" "}
+            <kbd className="font-mono">←</kbd>/<kbd className="font-mono">→</kbd> step,{" "}
+            <kbd className="font-mono">R</kbd> restart, <kbd className="font-mono">Delete</kbd>{" "}
+            remove selection, <kbd className="font-mono">Esc</kbd> cancel.
           </p>
         </aside>
       </div>
       <div className="mx-auto w-full max-w-7xl px-4 pb-6 sm:px-6">
         <AlgorithmDocsCard name={algorithm.name} docs={getCatalogEntry(algorithm.id).docs} />
       </div>
-      <PlaybackBar player={player} totalSteps={steps.length} speed={speed} onSpeedChange={setSpeed} />
+      <PlaybackBar
+        player={player}
+        totalSteps={steps.length}
+        speed={speed}
+        onSpeedChange={setSpeed}
+      />
     </div>
   );
 }

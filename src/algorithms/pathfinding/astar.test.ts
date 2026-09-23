@@ -45,12 +45,20 @@ describe("A*", () => {
   it("finds a straight path on an empty grid", () => {
     const grid = createGrid(5, 10);
     const res = astar(grid, "manhattan");
-    expect(res.path!.length - 1).toBe(Math.abs(grid.start.col - grid.target.col) + Math.abs(grid.start.row - grid.target.row));
+    expect(res.path!.length - 1).toBe(
+      Math.abs(grid.start.col - grid.target.col) + Math.abs(grid.start.row - grid.target.row),
+    );
   });
   it("reports no path when the target is enclosed", () => {
     let grid = createGrid(7, 7);
     grid = { ...grid, start: { row: 0, col: 0 }, target: { row: 3, col: 3 } };
-    for (const [r, c] of [[2, 3], [4, 3], [3, 2], [3, 4]] as const) grid = setWall(grid, { row: r, col: c }, true);
+    for (const [r, c] of [
+      [2, 3],
+      [4, 3],
+      [3, 2],
+      [3, 4],
+    ] as const)
+      grid = setWall(grid, { row: r, col: c }, true);
     const res = astar(grid, "manhattan");
     expect(res.path).toBeNull();
     const end = res.steps[res.steps.length - 1]!;

@@ -18,7 +18,11 @@ export const DIJKSTRA_PSEUDOCODE = [
 export class NegativeWeightError extends Error {}
 
 /** Result helper for tests / summaries. */
-export function reconstructPath(prev: Record<string, string | null>, source: string, target: string): string[] | null {
+export function reconstructPath(
+  prev: Record<string, string | null>,
+  source: string,
+  target: string,
+): string[] | null {
   const path: string[] = [];
   let cur: string | null | undefined = target;
   const guard = new Set<string>();
@@ -55,7 +59,8 @@ export const dijkstra: GraphStepGenerator = (graph, { source, target }) => {
   rec.predecessors = prev;
   const heap = new MinHeap<string>();
   heap.push(source, 0, source);
-  const sync = () => (rec.frontier = heap.snapshot().map((e) => ({ id: e.value, priority: e.priority })));
+  const sync = () =>
+    (rec.frontier = heap.snapshot().map((e) => ({ id: e.value, priority: e.priority })));
   sync();
   rec.nodeStates[source] = "queued";
   rec.metrics.frontierOps++;
@@ -77,7 +82,11 @@ export const dijkstra: GraphStepGenerator = (graph, { source, target }) => {
     rec.emit("finalize", `Current minimum-distance node is ${u} (dist ${d}). Finalize it.`, 4);
     if (target && u === target) {
       rec.nodeStates[u] = "visited";
-      rec.emit("finalize", `Target ${u} finalized — its shortest distance can no longer improve. Stop early.`, 4);
+      rec.emit(
+        "finalize",
+        `Target ${u} finalized — its shortest distance can no longer improve. Stop early.`,
+        4,
+      );
       break;
     }
     for (const { node: v, edge } of adj.get(u)!) {
@@ -105,7 +114,11 @@ export const dijkstra: GraphStepGenerator = (graph, { source, target }) => {
         );
       } else {
         if (rec.edgeStates[edge.id] === "idle") rec.edgeStates[edge.id] = "considered";
-        rec.emit("no-improve", `Checking neighbor ${v}: ${dist[u]} + ${edge.weight} = ${candidate} is not better than ${dist[v]}.`, 6);
+        rec.emit(
+          "no-improve",
+          `Checking neighbor ${v}: ${dist[u]} + ${edge.weight} = ${candidate} is not better than ${dist[v]}.`,
+          6,
+        );
       }
     }
     rec.nodeStates[u] = "visited";
@@ -125,7 +138,11 @@ export const dijkstra: GraphStepGenerator = (graph, { source, target }) => {
       }
       rec.emit("done", `Shortest path ${path.join(" → ")}, total cost ${dist[target]}.`, 8);
     } else {
-      rec.emit("done", `${target} is unreachable from ${source}: no sequence of edges connects them.`, 8);
+      rec.emit(
+        "done",
+        `${target} is unreachable from ${source}: no sequence of edges connects them.`,
+        8,
+      );
     }
   } else {
     rec.emit("done", "All reachable nodes finalized with their shortest distances.", 1);

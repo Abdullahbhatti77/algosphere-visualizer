@@ -10,13 +10,15 @@ export const graphAlgorithms: GraphAlgorithmDefinition[] = [
     tagline: "Explores level by level using a FIFO queue.",
     overview:
       "BFS visits every node at distance k from the source before any node at distance k + 1, so in an unweighted graph it finds shortest paths by edge count.",
-    implementation: "Iterative, FIFO queue. Nodes are marked discovered when enqueued, so each enters the queue at most once.",
+    implementation:
+      "Iterative, FIFO queue. Nodes are marked discovered when enqueued, so each enters the queue at most once.",
     pseudocode: BFS_PSEUDOCODE,
     frontierLabel: "Queue (front → back)",
     complexity: {
       time: "O(V + E)",
       space: "O(V)",
-      notes: "Adjacency-list representation; each node is enqueued once and each edge examined once (twice if undirected).",
+      notes:
+        "Adjacency-list representation; each node is enqueued once and each edge examined once (twice if undirected).",
     },
     usesWeights: false,
     usesTarget: false,

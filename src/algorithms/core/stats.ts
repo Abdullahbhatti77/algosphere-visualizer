@@ -62,6 +62,14 @@ export function formatStat(id: StatId, value: StatValue): string {
 }
 
 /** Pairs each declared stat with its label and formatted value, in order. */
-export function resolveStats(ids: readonly StatId[], values: StatValues, labels: Partial<Record<StatId, string>> = {}) {
-  return ids.map((id) => ({ id, label: labels[id] ?? STAT_LABELS[id], value: formatStat(id, values[id]) }));
+export function resolveStats(
+  ids: readonly StatId[],
+  values: StatValues,
+  labels: Partial<Record<StatId, string>> = {},
+) {
+  return ids.map((id) => ({
+    id,
+    label: labels[id] ?? STAT_LABELS[id],
+    value: formatStat(id, values[id]),
+  }));
 }

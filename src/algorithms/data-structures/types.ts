@@ -5,7 +5,8 @@ export interface DSItem {
   value: number;
 }
 
-export type DSStatus = "ok" | "underflow" | "overflow" | "duplicate" | "not-found" | "invalid" | "full";
+export type DSStatus =
+  "ok" | "underflow" | "overflow" | "duplicate" | "not-found" | "invalid" | "full";
 
 export interface DSStep<S, R extends string = string> {
   /** Snapshot of the structure after this step. */
@@ -45,7 +46,8 @@ export function parseDSValues(text: string, max: number): { values: number[] } |
   const values: number[] = [];
   for (const part of parts) {
     const n = Number(part);
-    if (!isValidDSValue(n)) return { error: `"${part}" is not a whole number from ${DS_VALUE_MIN} to ${DS_VALUE_MAX}.` };
+    if (!isValidDSValue(n))
+      return { error: `"${part}" is not a whole number from ${DS_VALUE_MIN} to ${DS_VALUE_MAX}.` };
     values.push(n);
   }
   return { values };
@@ -63,7 +65,12 @@ export function seededRandom(seed: number): () => number {
   };
 }
 
-export function randomValues(count: number, rand: () => number = Math.random, unique = false, max = 99): number[] {
+export function randomValues(
+  count: number,
+  rand: () => number = Math.random,
+  unique = false,
+  max = 99,
+): number[] {
   const out: number[] = [];
   const seen = new Set<number>();
   let guard = 0;

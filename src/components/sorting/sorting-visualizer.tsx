@@ -40,7 +40,6 @@ function defaultArray(size: number): number[] {
   return SEED_VALUES.slice(0, size);
 }
 
-
 export function SortingVisualizer() {
   const [algorithmId, setAlgorithmId] = useState("bubble");
   const [size, setSize] = useState(DEFAULT_SIZE);
@@ -63,7 +62,6 @@ export function SortingVisualizer() {
     const ended = typeof performance === "undefined" ? Date.now() : performance.now();
     return { steps: generated, generationMs: ended - started };
   }, [algorithm, input]);
-
 
   const intervalMs = SPEED_LEVELS[speedIndexOf(speed)]!.intervalMs;
   const player = useStepPlayer(steps.length, intervalMs, `${algorithmId}:${input.join(",")}`);
@@ -118,7 +116,10 @@ export function SortingVisualizer() {
               {player.isFinished && steps.length > 1 && (
                 <p className="text-xs text-muted-foreground" role="status">
                   <span className="font-medium text-foreground">Result: </span>
-                  sorted {step.values.length} value{step.values.length === 1 ? "" : "s"} in {steps.length} steps — {step.metrics.comparisons} comparisons, {step.metrics.swaps} swaps, {step.metrics.accesses} array accesses. Final order: {step.values.join(", ")}.
+                  sorted {step.values.length} value{step.values.length === 1 ? "" : "s"} in{" "}
+                  {steps.length} steps — {step.metrics.comparisons} comparisons,{" "}
+                  {step.metrics.swaps} swaps, {step.metrics.accesses} array accesses. Final order:{" "}
+                  {step.values.join(", ")}.
                 </p>
               )}
             </CardContent>

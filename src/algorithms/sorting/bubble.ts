@@ -5,7 +5,9 @@ import type { AlgorithmDefinition, AlgorithmStep } from "../types";
 function generate(input: readonly number[]): AlgorithmStep[] {
   const r = new StepRecorder(input);
   const n = r.values.length;
-  r.record("init", [], `Starting bubble sort on ${n} element${n === 1 ? "" : "s"}.`, { codeLine: 0 });
+  r.record("init", [], `Starting bubble sort on ${n} element${n === 1 ? "" : "s"}.`, {
+    codeLine: 0,
+  });
 
   for (let pass = 0; pass < n - 1; pass += 1) {
     let swapped = false;

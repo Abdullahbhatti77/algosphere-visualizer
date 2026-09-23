@@ -8,7 +8,6 @@ interface StatsPanelProps {
   elapsedMs: number;
   /** Null until measured on the client (SSR has no comparable timing). */
   generationMs: number | null;
-
 }
 
 function Stat({ label, value, hint }: { label: string; value: string; hint?: string }) {
@@ -49,7 +48,6 @@ export function StatsPanel({
             value={generationMs === null ? "—" : `${generationMs.toFixed(2)}ms`}
             hint="Time to run the algorithm"
           />
-
         </dl>
       </CardContent>
     </Card>

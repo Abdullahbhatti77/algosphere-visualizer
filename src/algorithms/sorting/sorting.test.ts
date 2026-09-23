@@ -56,4 +56,3 @@ describe.each(sortingAlgorithms.map((a) => [a.name, a] as const))("%s", (_name, 
     }
   });
 });
-
