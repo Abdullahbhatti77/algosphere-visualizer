@@ -24,12 +24,26 @@ const EMPTY_STEP: AlgorithmStep = {
 
 const DEFAULT_SIZE = 24;
 
+/**
+ * Deterministic starting array: generating a random one during render would
+ * differ between server and client HTML. Users get randomness on demand via
+ * the "Generate random array" control.
+ */
+function defaultArray(size: number): number[] {
+  let seed = 20260923;
+  return Array.from({ length: size }, () => {
+    seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+    return 5 + (seed % 96);
+  });
+}
+
 export function SortingVisualizer() {
   const [algorithmId, setAlgorithmId] = useState("bubble");
   const [size, setSize] = useState(DEFAULT_SIZE);
-  const [input, setInput] = useState<number[]>(() => randomArray(DEFAULT_SIZE));
+  const [input, setInput] = useState<number[]>(() => defaultArray(DEFAULT_SIZE));
   const [speed, setSpeed] = useState<SpeedId>("normal");
   const reducedMotion = useReducedMotion();
+
 
   const algorithm = getSortingAlgorithm(algorithmId);
 
