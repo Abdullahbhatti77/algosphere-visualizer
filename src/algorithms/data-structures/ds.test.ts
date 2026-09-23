@@ -177,8 +177,11 @@ describe("Complexity metadata", () => {
     expect([c.averageTime, c.worstTime, c.space]).toEqual(["O(log n)", "O(n)", "O(n)"]);
     for (const op of c.operations!) expect([op.average, op.worst]).toEqual(["O(log n)", "O(n)"]);
   });
-  it("stack and queue are O(1)", () => {
-    for (const id of ["stack", "queue"]) for (const op of getCatalogEntry(id).complexity.operations!) expect(op.worst).toBe("O(1)");
+  it("stack and queue operation bounds match the implemented storage models", () => {
+    for (const op of getCatalogEntry("stack").complexity.operations!) expect(op.worst).toBe("O(1)");
+    const queueOps = getCatalogEntry("queue").complexity.operations!;
+    expect(queueOps.find((op) => op.operation === "Enqueue")?.worst).toBe("O(1) bounded, O(n) resize");
+    for (const op of queueOps.filter((op) => op.operation !== "Enqueue")) expect(op.worst).toBe("O(1)");
   });
   it("isBigO rejects malformed strings", () => {
     expect(isBigO("O(n log n)")).toBe(true);
