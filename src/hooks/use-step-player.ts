@@ -36,7 +36,12 @@ export interface StepPlayer {
  * The player owns only cursor + timing concerns; it never knows what a step
  * means. Stepping backwards is exact because each step carries a full snapshot.
  */
-export function useStepPlayer(totalSteps: number, intervalMs: number): StepPlayer {
+export function useStepPlayer(
+  totalSteps: number,
+  intervalMs: number,
+  /** Changes whenever the step list is regenerated (new algorithm or input). */
+  resetKey: string = "",
+): StepPlayer {
   const [index, setIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [elapsedMs, setElapsedMs] = useState(0);
@@ -53,7 +58,8 @@ export function useStepPlayer(totalSteps: number, intervalMs: number): StepPlaye
     setElapsedMs(0);
     accumulatedRef.current = 0;
     runStartRef.current = null;
-  }, [totalSteps]);
+  }, [totalSteps, resetKey]);
+
 
   const stopClock = useCallback(() => {
     if (runStartRef.current !== null) {
