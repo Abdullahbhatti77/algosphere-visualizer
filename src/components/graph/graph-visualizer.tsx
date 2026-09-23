@@ -89,7 +89,7 @@ export function GraphVisualizer() {
   const player = useStepPlayer(steps.length, intervalMs, `${algorithmId}:${version}:${source}:${target}`);
   const step = steps[player.index] ?? null;
   const editable = player.index === 0 && !player.isPlaying;
-  const displayStep = editable && player.index === 0 ? null : step;
+  const displayStep = step;
 
   const deleteSelection = useCallback(() => {
     if (!editable) return;
