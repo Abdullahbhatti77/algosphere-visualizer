@@ -9,7 +9,8 @@
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "test": "vitest run"
   },
   "overrides": {
     "rolldown": "1.2.1"
@@ -87,5 +88,8 @@
     "typescript-eslint": "^8.56.1",
     "vite": "8.1.5",
     "vitest": "^3"
-  }
+  },
+  "description": "Interactive algorithm and data-structure visualizer with step-based execution, complexity metadata, and live statistics.",
+  "author": "Muhammad Abdullah",
+  "license": "MIT"
 }
