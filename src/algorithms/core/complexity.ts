@@ -24,10 +24,9 @@ export interface ComplexityMeta {
   notation?: { symbol: string; meaning: string }[];
 }
 
-const BIG_O = /^O\(.+\)$/;
+const BIG_O = /^O\(.+\)( [a-z]+)?$/;
 
-export function isBigO(value: string): boolean {
-  if (!BIG_O.test(value)) return false;
+function balanced(value: string): boolean {
   let depth = 0;
   for (const ch of value) {
     if (ch === "(") depth++;
@@ -35,6 +34,14 @@ export function isBigO(value: string): boolean {
     if (depth < 0) return false;
   }
   return depth === 0;
+}
+
+/** Accepts "O(n log n)" and qualified lists like "O(log n) average, O(n) worst". */
+export function isBigO(value: string): boolean {
+  return value.split(",").every((part) => {
+    const p = part.trim();
+    return BIG_O.test(p) && balanced(p);
+  });
 }
 
 /** Returns a list of problems; an empty list means the metadata is valid. */
