@@ -57,8 +57,8 @@ const CATEGORIES = [
     to: "/data-structures",
     label: "Data Structures",
     icon: Boxes,
-    body: "Stacks, queues, linked lists, trees, and heaps, operation by operation.",
-    status: "In development",
+    body: "Binary search tree, stack, and queue, operation by operation.",
+    status: "Available",
   },
 ] as const;
 

@@ -17,7 +17,9 @@ import {
 import { heuristics, type HeuristicId } from "@/algorithms/pathfinding/heuristics";
 import { PlaybackBar } from "@/components/viz/playback-bar";
 import { PseudocodePanel } from "@/components/viz/pseudocode-panel";
-import { SimpleComplexity, StatGrid } from "@/components/viz/simple-complexity";
+import { getCatalogEntry } from "@/algorithms/core/catalog";
+import { ComplexityCard } from "@/components/viz/complexity-card";
+import { StatsCard } from "@/components/viz/stats-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -356,29 +358,18 @@ export function AStarVisualizer() {
               </details>
             </CardContent>
           </Card>
-          <Card className="min-w-0">
-            <CardHeader className="pb-3"><CardTitle className="text-sm">Statistics</CardTitle></CardHeader>
-            <CardContent>
-              <StatGrid
-                items={[
-                  { label: "Step", value: `${player.index + 1}/${steps.length}` },
-                  { label: "Nodes explored", value: step.metrics.expanded },
-                  { label: "Neighbor checks", value: step.metrics.neighborChecks },
-                  { label: "Path length", value: step.found ? pathLen ?? "—" : "—" },
-                  { label: "Elapsed", value: `${(player.elapsedMs / 1000).toFixed(1)}s` },
-                  { label: "Compute time", value: mounted ? `${generationMs.toFixed(2)}ms` : "—" },
-                ]}
-              />
-            </CardContent>
-          </Card>
-          <SimpleComplexity
-            rows={[
-              { label: "Time (worst)", value: "O(V log V)" },
-              { label: "Space", value: "O(V)" },
-              { label: "V", value: "rows × cols" },
-            ]}
-            notes="4-neighbour grid, so E ≤ 4V. With a consistent heuristic each cell is expanded at most once; the binary heap makes each insert/extract O(log V). A better-informed heuristic expands fewer cells in practice but does not change the worst case (a fully walled-off target forces exploring every reachable cell)."
+          <StatsCard
+            ids={getCatalogEntry("astar").stats}
+            values={{
+              step: `${player.index + 1}/${steps.length}`,
+              explored: step.metrics.expanded,
+              neighborChecks: step.metrics.neighborChecks,
+              pathLength: step.found ? pathLen ?? null : null,
+              elapsed: player.elapsedMs,
+              computeTime: mounted ? generationMs : null,
+            }}
           />
+          <ComplexityCard meta={getCatalogEntry("astar").complexity} />
         </aside>
       </div>
       <PlaybackBar player={player} totalSteps={steps.length} speed={speed} onSpeedChange={setSpeed} />

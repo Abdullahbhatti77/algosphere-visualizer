@@ -18,7 +18,9 @@ import type { Graph, GraphStep } from "@/algorithms/graph/types";
 import { GraphCanvas, GraphLegend, type EditorMode } from "@/components/graph/graph-canvas";
 import { PlaybackBar } from "@/components/viz/playback-bar";
 import { PseudocodePanel } from "@/components/viz/pseudocode-panel";
-import { SimpleComplexity, StatGrid } from "@/components/viz/simple-complexity";
+import { getCatalogEntry } from "@/algorithms/core/catalog";
+import { ComplexityCard } from "@/components/viz/complexity-card";
+import { StatsCard } from "@/components/viz/stats-card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -435,30 +437,19 @@ export function GraphVisualizer() {
             </CardContent>
           </Card>
 
-          <Card className="min-w-0">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm">Statistics</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <StatGrid
-                items={[
-                  { label: "Step", value: `${steps.length ? player.index + 1 : 0}/${steps.length}` },
-                  { label: algorithm.id === "dijkstra" ? "Finalized" : "Visited", value: step?.metrics.visited ?? 0 },
-                  { label: "Edge traversals", value: step?.metrics.edgeChecks ?? 0 },
-                  { label: "Frontier inserts", value: step?.metrics.frontierOps ?? 0 },
-                  { label: "Elapsed", value: `${(player.elapsedMs / 1000).toFixed(1)}s` },
-                  { label: "Compute time", value: mounted ? `${generationMs.toFixed(2)}ms` : "—" },
-                ]}
-              />
-            </CardContent>
-          </Card>
-          <SimpleComplexity
-            rows={[
-              { label: "Time", value: algorithm.complexity.time },
-              { label: "Space", value: algorithm.complexity.space },
-            ]}
-            notes={algorithm.complexity.notes}
+          <StatsCard
+            ids={getCatalogEntry(algorithm.id).stats}
+            values={{
+              step: `${steps.length ? player.index + 1 : 0}/${steps.length}`,
+              visited: step?.metrics.visited ?? 0,
+              processed: step?.metrics.visited ?? 0,
+              edgeChecks: step?.metrics.edgeChecks ?? 0,
+              frontierOps: step?.metrics.frontierOps ?? 0,
+              elapsed: player.elapsedMs,
+              computeTime: mounted ? generationMs : null,
+            }}
           />
+          <ComplexityCard meta={getCatalogEntry(algorithm.id).complexity} />
           {algorithm.id === "dijkstra" && (
             <Alert>
               <AlertDescription className="text-xs">

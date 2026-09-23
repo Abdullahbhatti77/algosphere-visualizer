@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useSyncExternalStore } from "react";
+
+import { StepController, type PlaybackStatus } from "@/algorithms/core/step-controller";
 
 export const SPEED_LEVELS = [
   { id: "very-slow", label: "Very Slow", short: "0.25×", intervalMs: 900 },
@@ -17,11 +19,15 @@ export function speedIndexOf(id: SpeedId): number {
 
 export interface StepPlayer {
   index: number;
+  totalSteps: number;
+  status: PlaybackStatus;
   isPlaying: boolean;
+  isPaused: boolean;
   isFinished: boolean;
   elapsedMs: number;
   play: () => void;
   pause: () => void;
+  resume: () => void;
   toggle: () => void;
   next: () => void;
   previous: () => void;
@@ -31,10 +37,8 @@ export interface StepPlayer {
 }
 
 /**
- * Drives playback over a pre-computed step list.
- *
- * The player owns only cursor + timing concerns; it never knows what a step
- * means. Stepping backwards is exact because each step carries a full snapshot.
+ * React adapter over the framework-free {@link StepController}.
+ * The controller owns cursor, status and timing; this hook only subscribes.
  */
 export function useStepPlayer(
   totalSteps: number,
@@ -42,131 +46,47 @@ export function useStepPlayer(
   /** Changes whenever the step list is regenerated (new algorithm or input). */
   resetKey: string = "",
 ): StepPlayer {
-  const [index, setIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [elapsedMs, setElapsedMs] = useState(0);
-  const runStartRef = useRef<number | null>(null);
-  const accumulatedRef = useRef(0);
+  const ref = useRef<StepController | null>(null);
+  if (ref.current === null) ref.current = new StepController({ totalSteps, intervalMs });
+  const controller = ref.current;
 
+  const snap = useSyncExternalStore(controller.subscribe, controller.getSnapshot, controller.getSnapshot);
+
+  useEffect(() => {
+    controller.load(totalSteps);
+  }, [controller, totalSteps, resetKey]);
+
+  useEffect(() => {
+    controller.setSpeed(intervalMs);
+  }, [controller, intervalMs]);
+
+  useEffect(() => () => controller.dispose(), [controller]);
+
+  // Until the load effect runs, a freshly regenerated list must not be
+  // indexed with the previous cursor.
+  const stale = snap.totalSteps !== totalSteps;
+  const index = stale ? 0 : snap.currentStep;
   const lastIndex = Math.max(0, totalSteps - 1);
-  const isFinished = totalSteps === 0 || index >= lastIndex;
 
-  // A new step list (new array or algorithm) resets the cursor and the clock.
-  useEffect(() => {
-    setIndex(0);
-    setIsPlaying(false);
-    setElapsedMs(0);
-    accumulatedRef.current = 0;
-    runStartRef.current = null;
-  }, [totalSteps, resetKey]);
-
-
-  const stopClock = useCallback(() => {
-    if (runStartRef.current !== null) {
-      accumulatedRef.current += performance.now() - runStartRef.current;
-      runStartRef.current = null;
-      setElapsedMs(accumulatedRef.current);
-    }
-  }, []);
-
-  const startClock = useCallback(() => {
-    if (runStartRef.current === null) runStartRef.current = performance.now();
-  }, []);
-
-  const pause = useCallback(() => {
-    setIsPlaying(false);
-    stopClock();
-  }, [stopClock]);
-
-  const play = useCallback(() => {
-    if (totalSteps === 0) return;
-    setIndex((current) => {
-      if (current >= lastIndex) {
-        accumulatedRef.current = 0;
-        setElapsedMs(0);
-        return 0;
-      }
-      return current;
-    });
-    startClock();
-    setIsPlaying(true);
-  }, [lastIndex, startClock, totalSteps]);
-
-  const toggle = useCallback(() => {
-    if (isPlaying) pause();
-    else play();
-  }, [isPlaying, pause, play]);
-
-  const advance = useCallback(
-    (delta: number) => {
-      setIndex((current) => Math.min(lastIndex, Math.max(0, current + delta)));
-    },
-    [lastIndex],
+  return useMemo<StepPlayer>(
+    () => ({
+      index,
+      totalSteps,
+      status: stale ? "idle" : snap.status,
+      isPlaying: !stale && snap.isPlaying,
+      isPaused: !stale && snap.isPaused,
+      isFinished: totalSteps === 0 || index >= lastIndex,
+      elapsedMs: stale ? 0 : snap.elapsedMs,
+      play: () => controller.start(),
+      pause: () => controller.pause(),
+      resume: () => controller.resume(),
+      toggle: () => controller.toggle(),
+      next: () => controller.next(),
+      previous: () => controller.previous(),
+      restart: () => controller.reset(),
+      skipToEnd: () => controller.complete(),
+      goTo: (target: number) => controller.goTo(target),
+    }),
+    [controller, index, lastIndex, snap, stale, totalSteps],
   );
-
-  const next = useCallback(() => {
-    pause();
-    advance(1);
-  }, [advance, pause]);
-
-  const previous = useCallback(() => {
-    pause();
-    advance(-1);
-  }, [advance, pause]);
-
-  const restart = useCallback(() => {
-    pause();
-    accumulatedRef.current = 0;
-    setElapsedMs(0);
-    setIndex(0);
-  }, [pause]);
-
-  const skipToEnd = useCallback(() => {
-    pause();
-    setIndex(lastIndex);
-  }, [lastIndex, pause]);
-
-  const goTo = useCallback(
-    (target: number) => {
-      pause();
-      setIndex(Math.min(lastIndex, Math.max(0, Math.round(target))));
-    },
-    [lastIndex, pause],
-  );
-
-  useEffect(() => {
-    if (!isPlaying) return;
-    if (index >= lastIndex) {
-      setIsPlaying(false);
-      stopClock();
-      return;
-    }
-    const timer = window.setTimeout(() => setIndex((current) => current + 1), intervalMs);
-    return () => window.clearTimeout(timer);
-  }, [index, intervalMs, isPlaying, lastIndex, stopClock]);
-
-  // Tick the visible clock while playing.
-  useEffect(() => {
-    if (!isPlaying) return;
-    const timer = window.setInterval(() => {
-      const running = runStartRef.current === null ? 0 : performance.now() - runStartRef.current;
-      setElapsedMs(accumulatedRef.current + running);
-    }, 100);
-    return () => window.clearInterval(timer);
-  }, [isPlaying]);
-
-  return {
-    index,
-    isPlaying,
-    isFinished,
-    elapsedMs,
-    play,
-    pause,
-    toggle,
-    next,
-    previous,
-    restart,
-    skipToEnd,
-    goTo,
-  };
 }

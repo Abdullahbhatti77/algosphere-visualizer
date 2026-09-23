@@ -4,7 +4,8 @@ import { getSortingAlgorithm } from "@/algorithms/registry";
 import type { AlgorithmStep } from "@/algorithms/types";
 import { ArrayControls } from "@/components/viz/array-controls";
 import { BarChart, VizLegend } from "@/components/viz/bar-chart";
-import { ComplexityPanel } from "@/components/viz/complexity-panel";
+import { getCatalogEntry } from "@/algorithms/core/catalog";
+import { ComplexityCard } from "@/components/viz/complexity-card";
 import { ExplanationPanel } from "@/components/viz/explanation-panel";
 import { PlaybackBar } from "@/components/viz/playback-bar";
 import { StatsPanel } from "@/components/viz/stats-panel";
@@ -131,7 +132,7 @@ export function SortingVisualizer() {
             elapsedMs={player.elapsedMs}
             generationMs={mounted ? generationMs : null}
           />
-          <ComplexityPanel algorithm={algorithm} />
+          <ComplexityCard meta={getCatalogEntry(algorithm.id).complexity} />
           <p className="text-xs text-muted-foreground">
             Keyboard: <kbd className="font-mono">Space</kbd> play/pause,{" "}
             <kbd className="font-mono">←</kbd>/<kbd className="font-mono">→</kbd> step,{" "}
