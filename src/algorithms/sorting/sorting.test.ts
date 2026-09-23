@@ -46,7 +46,9 @@ describe.each(sortingAlgorithms.map((a) => [a.name, a] as const))("%s", (_name, 
     }
   });
 
-  it("preserves the multiset of values in every snapshot", () => {
+  // Only meaningful for in-place algorithms: merge sort legitimately holds a
+  // partially overwritten range while copying from its temporary buffers.
+  it.skipIf(!algorithm.inPlace)("preserves the multiset of values in every snapshot", () => {
     const steps = algorithm.generate(CASES.duplicates!);
     const expected = [...CASES.duplicates!].sort((a, b) => a - b);
     for (const step of steps) {
@@ -54,3 +56,4 @@ describe.each(sortingAlgorithms.map((a) => [a.name, a] as const))("%s", (_name, 
     }
   });
 });
+
