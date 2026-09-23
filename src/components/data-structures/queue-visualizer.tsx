@@ -144,6 +144,8 @@ export function QueueVisualizer() {
         labels: { queueOps: "Primitive ops (this op)", operations: "Completed ops", capacity: "Buffer slots" },
       }}
       complexity={entry.complexity}
+      docs={entry.docs}
+      docsName={entry.displayName}
       player={r.player}
       totalSteps={r.steps.length}
       speed={r.speed}

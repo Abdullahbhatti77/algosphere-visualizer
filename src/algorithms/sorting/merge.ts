@@ -36,12 +36,14 @@ function generate(input: readonly number[]): AlgorithmStep[] {
 
     while (i < left.length && j < right.length) {
       r.countComparison();
-      const takeLeft = left[i]! <= right[j]!;
+      const a = left[i]!;
+      const b = right[j]!;
+      const takeLeft = a <= b;
       const value = takeLeft ? left[i++]! : right[j++]!;
       r.write(
         k,
         value,
-        `Taking ${value} from the ${takeLeft ? "left" : "right"} run into position ${k}.`,
+        `Compare run heads ${a} (left) and ${b} (right): ${takeLeft ? `${a} ≤ ${b}${a === b ? ", left wins ties for stability" : ""}` : `${b} < ${a}`}, so write ${value} into position ${k}.`,
         { range: [lo, hi], depth, codeLine: 6 },
       );
       k += 1;

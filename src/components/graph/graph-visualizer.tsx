@@ -20,6 +20,7 @@ import { PlaybackBar } from "@/components/viz/playback-bar";
 import { PseudocodePanel } from "@/components/viz/pseudocode-panel";
 import { getCatalogEntry } from "@/algorithms/core/catalog";
 import { ComplexityCard } from "@/components/viz/complexity-card";
+import { AlgorithmDocsCard } from "@/components/viz/algorithm-docs";
 import { StatsCard } from "@/components/viz/stats-card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -461,6 +462,9 @@ export function GraphVisualizer() {
             Keyboard: <kbd className="font-mono">Space</kbd> play/pause, <kbd className="font-mono">←</kbd>/<kbd className="font-mono">→</kbd> step, <kbd className="font-mono">R</kbd> restart, <kbd className="font-mono">Delete</kbd> remove selection, <kbd className="font-mono">Esc</kbd> cancel.
           </p>
         </aside>
+      </div>
+      <div className="mx-auto w-full max-w-7xl px-4 pb-6 sm:px-6">
+        <AlgorithmDocsCard name={algorithm.name} docs={getCatalogEntry(algorithm.id).docs} />
       </div>
       <PlaybackBar player={player} totalSteps={steps.length} speed={speed} onSpeedChange={setSpeed} />
     </div>

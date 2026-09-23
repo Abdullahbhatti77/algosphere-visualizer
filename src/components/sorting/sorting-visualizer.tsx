@@ -47,6 +47,10 @@ export function SortingVisualizer() {
   const [input, setInput] = useState<number[]>(() => defaultArray(DEFAULT_SIZE));
   const [speed, setSpeed] = useState<SpeedId>("normal");
   const reducedMotion = useReducedMotion();
+  // Reduced motion: slow playback down so each state can be read, not watched.
+  useEffect(() => {
+    if (reducedMotion) setSpeed("slow");
+  }, [reducedMotion]);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
@@ -111,6 +115,12 @@ export function SortingVisualizer() {
               <p className="rounded-md bg-muted px-3 py-2 text-sm" aria-live="polite">
                 {step.explanation}
               </p>
+              {player.isFinished && steps.length > 1 && (
+                <p className="text-xs text-muted-foreground" role="status">
+                  <span className="font-medium text-foreground">Result: </span>
+                  sorted {step.values.length} value{step.values.length === 1 ? "" : "s"} in {steps.length} steps — {step.metrics.comparisons} comparisons, {step.metrics.swaps} swaps, {step.metrics.accesses} array accesses. Final order: {step.values.join(", ")}.
+                </p>
+              )}
             </CardContent>
           </Card>
           <ExplanationPanel algorithm={algorithm} step={step} />
