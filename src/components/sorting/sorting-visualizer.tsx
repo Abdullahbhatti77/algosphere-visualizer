@@ -26,16 +26,19 @@ const DEFAULT_SIZE = 24;
 
 /**
  * Deterministic starting array: generating a random one during render would
- * differ between server and client HTML. Users get randomness on demand via
+ * make the server and client HTML disagree. Users get randomness on demand via
  * the "Generate random array" control.
  */
+const SEED_VALUES = [
+  47, 12, 88, 33, 61, 9, 74, 25, 96, 40, 17, 68, 53, 81, 6, 29, 92, 44, 70, 21, 58, 85, 14, 36, 63,
+  99, 27, 50, 77, 11, 39, 66, 93, 20, 45, 72, 8, 31, 57, 84, 16, 42, 69, 95, 23, 48, 75, 13, 34, 60,
+  87, 19, 41, 67, 94, 22, 52, 79, 10, 30,
+];
+
 function defaultArray(size: number): number[] {
-  let seed = 20260923;
-  return Array.from({ length: size }, () => {
-    seed = (seed * 1103515245 + 12345) & 0x7fffffff;
-    return 5 + (seed % 96);
-  });
+  return SEED_VALUES.slice(0, size);
 }
+
 
 export function SortingVisualizer() {
   const [algorithmId, setAlgorithmId] = useState("bubble");
