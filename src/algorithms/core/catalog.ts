@@ -44,9 +44,7 @@ export interface CatalogEntry {
   complexity: ComplexityMeta;
   /** Single listing, or one listing per operation for data structures. */
   pseudocode: readonly string[] | Readonly<Record<string, readonly string[]>>;
-  implementation:
-    | ((...args: never[]) => unknown)
-    | Readonly<Record<string, (...args: never[]) => unknown>>;
+  implementation: ((...args: never[]) => unknown) | Readonly<Record<string, (...args: never[]) => unknown>>;
   visualizer: VisualizerKey;
   /** Statistics this entry genuinely tracks; nothing else is displayed. */
   stats: readonly StatId[];
