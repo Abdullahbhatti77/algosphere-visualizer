@@ -9,8 +9,6 @@ the algorithm — nothing is pre-scripted.
 ![Pathfinding screenshot](docs/screenshots/pathfinding.png)
 ![Data structures screenshot](docs/screenshots/data-structures.png)
 
-> Screenshots are placeholders — capture them from a running build and save
-> them under `docs/screenshots/`.
 
 ## Motivation
 
