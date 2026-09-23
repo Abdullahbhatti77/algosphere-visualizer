@@ -82,25 +82,7 @@ The interface is designed for desktop and mobile use. Controls stack on smaller 
 
 ## Live Demo
 
-Live demo: coming soon.
-
-## Screenshots
-
-Screenshots should be captured from the running application and saved under `screenshots/` before publishing a final portfolio README. The intended filenames are:
-
-```text
-screenshots/
-├── dashboard.png
-├── sorting.png
-├── graph-editor.png
-├── dijkstra.png
-├── astar.png
-├── bst.png
-├── stack-queue.png
-└── complexity-panel.png
-```
-
-No screenshots are embedded here until real captures are added.
+https://algosphere-visualizer.vercel.app
 
 ## Architecture
 
