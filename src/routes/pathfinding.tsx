@@ -1,11 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { ComingSoon } from "@/components/layout/coming-soon";
 import { PageHeader } from "@/components/layout/page-header";
+import { AStarVisualizer } from "@/components/pathfinding/astar-visualizer";
 
-const title = "Pathfinding — AlgoViz";
+const title = "A* Pathfinding on a Grid | AlgoViz";
 const description =
-  "A*, Dijkstra, BFS, and greedy best-first search on a grid with walls and weights, visualised node by node.";
+  "Draw walls, generate mazes, and watch A* expand its open and closed sets with live g, h, and f scores, using Manhattan or Euclidean heuristics.";
 
 export const Route = createFileRoute("/pathfinding")({
   head: () => ({
@@ -14,6 +14,8 @@ export const Route = createFileRoute("/pathfinding")({
       { name: "description", content: description },
       { property: "og:title", content: title },
       { property: "og:description", content: description },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: PathfindingPage,
@@ -24,18 +26,10 @@ function PathfindingPage() {
     <>
       <PageHeader
         eyebrow="Pathfinding"
-        title="Grid pathfinding"
-        description="Watch search frontiers expand across a grid you can draw walls on, then see the reconstructed path."
+        title="A* search"
+        description="A* expands the cell with the lowest f(n) = g(n) + h(n): cost so far plus an admissible estimate of the remaining distance."
       />
-      <ComingSoon
-        title="Grid pathfinding"
-        planned={[
-          "Editable grid with walls, weights, and draggable start/goal cells",
-          "A* with selectable Manhattan / Euclidean heuristics and f/g/h readouts",
-          "Dijkstra and BFS for comparison against A* on the same grid",
-          "Path reconstruction replay plus visited-node and path-length statistics",
-        ]}
-      />
+      <AStarVisualizer />
     </>
   );
 }

@@ -1,11 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { ComingSoon } from "@/components/layout/coming-soon";
+import { GraphVisualizer } from "@/components/graph/graph-visualizer";
 import { PageHeader } from "@/components/layout/page-header";
 
-const title = "Graph Algorithms — AlgoViz";
+const title = "Graph Algorithms — BFS, DFS, Dijkstra | AlgoViz";
 const description =
-  "Breadth-first search, depth-first search, Dijkstra, and minimum spanning trees visualised as real traversal state over an editable graph.";
+  "Build your own graph and watch breadth-first search, depth-first search, and Dijkstra's shortest path run step by step with live queues, stacks, and distance tables.";
 
 export const Route = createFileRoute("/graph")({
   head: () => ({
@@ -14,6 +14,8 @@ export const Route = createFileRoute("/graph")({
       { name: "description", content: description },
       { property: "og:title", content: title },
       { property: "og:description", content: description },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: GraphPage,
@@ -25,17 +27,9 @@ function GraphPage() {
       <PageHeader
         eyebrow="Graphs"
         title="Graph algorithms"
-        description="Traversals and shortest paths over an editable node-link graph, driven by the same step model as sorting."
+        description="Edit the graph, pick a source, and step through BFS, DFS, or Dijkstra. Every frame is a recorded state of the real algorithm."
       />
-      <ComingSoon
-        title="Graph traversals"
-        planned={[
-          "Breadth-first search with a live frontier queue",
-          "Depth-first search with an explicit stack and discovery/finish times",
-          "Dijkstra's algorithm with a priority queue and distance table",
-          "Kruskal and Prim minimum spanning trees with union-find state",
-        ]}
-      />
+      <GraphVisualizer />
     </>
   );
 }
