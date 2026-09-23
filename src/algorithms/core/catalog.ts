@@ -44,9 +44,9 @@ export interface CatalogEntry {
   complexity: ComplexityMeta;
   /** Single listing, or one listing per operation for data structures. */
   pseudocode: readonly string[] | Readonly<Record<string, readonly string[]>>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   implementation:
-    ((...args: any[]) => unknown) | Readonly<Record<string, (...args: any[]) => unknown>>;
+    | ((...args: never[]) => unknown)
+    | Readonly<Record<string, (...args: never[]) => unknown>>;
   visualizer: VisualizerKey;
   /** Statistics this entry genuinely tracks; nothing else is displayed. */
   stats: readonly StatId[];

@@ -67,7 +67,7 @@ export function astar(grid: Grid, heuristicId: HeuristicId): AStarResult {
   const heap = new MinHeap<string>();
   const metrics = { expanded: 0, neighborChecks: 0, openPushes: 0 };
   let current: string | null = null;
-  let path: string[] = [];
+  const path: string[] = [];
 
   const scoreOf = (k: string): CellScore => {
     const gg = g.get(k)!;
