@@ -6,7 +6,9 @@ interface StatsPanelProps {
   stepIndex: number;
   totalSteps: number;
   elapsedMs: number;
-  generationMs: number;
+  /** Null until measured on the client (SSR has no comparable timing). */
+  generationMs: number | null;
+
 }
 
 function Stat({ label, value, hint }: { label: string; value: string; hint?: string }) {
