@@ -44,9 +44,10 @@ export function StatsPanel({
           <Stat label="Playback time" value={`${(elapsedMs / 1000).toFixed(1)}s`} />
           <Stat
             label="Step generation"
-            value={`${generationMs.toFixed(2)}ms`}
+            value={generationMs === null ? "—" : `${generationMs.toFixed(2)}ms`}
             hint="Time to run the algorithm"
           />
+
         </dl>
       </CardContent>
     </Card>
