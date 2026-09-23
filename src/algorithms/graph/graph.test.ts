@@ -11,30 +11,60 @@ function g(edges: [string, string, number?][], directed = false, extra: string[]
   edges.forEach(([a, b]) => (ids.add(a), ids.add(b)));
   return {
     nodes: [...ids].sort().map((id) => ({ id, label: id, x: 0, y: 0 })),
-    edges: edges.map(([s, t, w]) => ({ id: `${s}${directed ? ">" : "-"}${t}`, source: s, target: t, directed, weight: w ?? 1 })),
+    edges: edges.map(([s, t, w]) => ({
+      id: `${s}${directed ? ">" : "-"}${t}`,
+      source: s,
+      target: t,
+      directed,
+      weight: w ?? 1,
+    })),
   };
 }
-const last = <T,>(a: T[]) => a[a.length - 1]!;
+const last = <T>(a: T[]) => a[a.length - 1]!;
 
 describe("BFS", () => {
   it("visits level by level", () => {
-    const graph = g([["A", "B"], ["A", "C"], ["B", "D"], ["C", "E"], ["D", "F"]]);
+    const graph = g([
+      ["A", "B"],
+      ["A", "C"],
+      ["B", "D"],
+      ["C", "E"],
+      ["D", "F"],
+    ]);
     expect(last(bfs(graph, { source: "A" })).order).toEqual(["A", "B", "C", "D", "E", "F"]);
   });
   it("terminates on cycles and visits each node once", () => {
-    const graph = g([["A", "B"], ["B", "C"], ["C", "A"], ["C", "D"]]);
+    const graph = g([
+      ["A", "B"],
+      ["B", "C"],
+      ["C", "A"],
+      ["C", "D"],
+    ]);
     const order = last(bfs(graph, { source: "A" })).order;
     expect(order).toEqual(["A", "B", "C", "D"]);
   });
   it("leaves disconnected nodes unvisited", () => {
-    const graph = g([["A", "B"], ["C", "D"]], false, ["E"]);
+    const graph = g(
+      [
+        ["A", "B"],
+        ["C", "D"],
+      ],
+      false,
+      ["E"],
+    );
     const end = last(bfs(graph, { source: "A" }));
     expect(end.order).toEqual(["A", "B"]);
     expect(end.nodeStates["C"]).toBe("unvisited");
     expect(end.nodeStates["E"]).toBe("unvisited");
   });
   it("respects edge direction", () => {
-    const graph = g([["A", "B"], ["C", "A"]], true);
+    const graph = g(
+      [
+        ["A", "B"],
+        ["C", "A"],
+      ],
+      true,
+    );
     expect(last(bfs(graph, { source: "A" })).order).toEqual(["A", "B"]);
   });
   it("is deterministic", () => {
@@ -45,15 +75,28 @@ describe("BFS", () => {
 
 describe("DFS", () => {
   it("matches recursive DFS order", () => {
-    const graph = g([["A", "B"], ["A", "C"], ["B", "D"], ["C", "E"], ["D", "F"]]);
+    const graph = g([
+      ["A", "B"],
+      ["A", "C"],
+      ["B", "D"],
+      ["C", "E"],
+      ["D", "F"],
+    ]);
     expect(last(dfs(graph, { source: "A" })).order).toEqual(["A", "B", "D", "F", "C", "E"]);
   });
   it("handles cycles", () => {
-    const graph = g([["A", "B"], ["B", "C"], ["C", "A"]]);
+    const graph = g([
+      ["A", "B"],
+      ["B", "C"],
+      ["C", "A"],
+    ]);
     expect(last(dfs(graph, { source: "A" })).order).toEqual(["A", "B", "C"]);
   });
   it("handles disconnected graphs", () => {
-    const graph = g([["A", "B"], ["C", "D"]]);
+    const graph = g([
+      ["A", "B"],
+      ["C", "D"],
+    ]);
     expect(last(dfs(graph, { source: "C" })).order).toEqual(["C", "D"]);
   });
 });
@@ -67,7 +110,11 @@ describe("Dijkstra", () => {
     let cost = 0;
     const graph = sampleGraph();
     for (let i = 1; i < path.length; i++) {
-      const e = graph.edges.find((x) => (x.source === path[i - 1] && x.target === path[i]) || (x.target === path[i - 1] && x.source === path[i]))!;
+      const e = graph.edges.find(
+        (x) =>
+          (x.source === path[i - 1] && x.target === path[i]) ||
+          (x.target === path[i - 1] && x.source === path[i]),
+      )!;
       cost += e.weight;
     }
     expect(cost).toBe(13);
@@ -75,17 +122,45 @@ describe("Dijkstra", () => {
     expect(last(path)).toBe("G");
   });
   it("computes all distances without a target", () => {
-    const end = last(dijkstra(g([["A", "B", 1], ["B", "C", 2], ["A", "C", 5]]), { source: "A" }));
+    const end = last(
+      dijkstra(
+        g([
+          ["A", "B", 1],
+          ["B", "C", 2],
+          ["A", "C", 5],
+        ]),
+        { source: "A" },
+      ),
+    );
     expect(end.distances).toEqual({ A: 0, B: 1, C: 3 });
   });
   it("respects directed edges", () => {
-    const end = last(dijkstra(g([["A", "B", 1], ["C", "B", 1]], true), { source: "A", target: "C" }));
+    const end = last(
+      dijkstra(
+        g(
+          [
+            ["A", "B", 1],
+            ["C", "B", 1],
+          ],
+          true,
+        ),
+        { source: "A", target: "C" },
+      ),
+    );
     expect(end.distances!["C"]).toBe(Infinity);
     expect(end.path).toBeUndefined();
     expect(end.explanation).toMatch(/unreachable/);
   });
   it("supports zero weights", () => {
-    const end = last(dijkstra(g([["A", "B", 0], ["B", "C", 0]]), { source: "A", target: "C" }));
+    const end = last(
+      dijkstra(
+        g([
+          ["A", "B", 0],
+          ["B", "C", 0],
+        ]),
+        { source: "A", target: "C" },
+      ),
+    );
     expect(end.distances!["C"]).toBe(0);
   });
   it("rejects negative weights", () => {

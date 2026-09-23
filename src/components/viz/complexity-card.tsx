@@ -37,15 +37,23 @@ export function ComplexityCard({ meta }: { meta: ComplexityMeta }) {
             <caption className="sr-only">Time complexity per operation</caption>
             <thead>
               <tr className="border-b border-border text-left text-muted-foreground">
-                <th scope="col" className="py-1.5 font-normal">Operation</th>
-                <th scope="col" className="py-1.5 text-right font-normal">Average</th>
-                <th scope="col" className="py-1.5 text-right font-normal">Worst</th>
+                <th scope="col" className="py-1.5 font-normal">
+                  Operation
+                </th>
+                <th scope="col" className="py-1.5 text-right font-normal">
+                  Average
+                </th>
+                <th scope="col" className="py-1.5 text-right font-normal">
+                  Worst
+                </th>
               </tr>
             </thead>
             <tbody>
               {meta.operations.map((op) => (
                 <tr key={op.operation} className="border-b border-border">
-                  <th scope="row" className="py-1.5 text-left font-normal text-muted-foreground">{op.operation}</th>
+                  <th scope="row" className="py-1.5 text-left font-normal text-muted-foreground">
+                    {op.operation}
+                  </th>
                   <td className="py-1.5 text-right font-mono">{op.average}</td>
                   <td className="py-1.5 text-right font-mono">{op.worst}</td>
                 </tr>
@@ -65,7 +73,9 @@ export function ComplexityCard({ meta }: { meta: ComplexityMeta }) {
               </>
             ))}
           <Row label="Space" value={meta.space} />
-          {meta.notation?.map((n) => <Row key={n.symbol} label={n.symbol} value={n.meaning} />)}
+          {meta.notation?.map((n) => (
+            <Row key={n.symbol} label={n.symbol} value={n.meaning} />
+          ))}
         </dl>
         <div className="mt-3 text-xs leading-relaxed text-muted-foreground">
           <span className="font-medium text-foreground">Assumptions: </span>
@@ -73,7 +83,9 @@ export function ComplexityCard({ meta }: { meta: ComplexityMeta }) {
             meta.assumptions[0]
           ) : (
             <ul className="mt-1 list-disc space-y-1 pl-4">
-              {meta.assumptions.map((a) => <li key={a}>{a}</li>)}
+              {meta.assumptions.map((a) => (
+                <li key={a}>{a}</li>
+              ))}
             </ul>
           )}
         </div>

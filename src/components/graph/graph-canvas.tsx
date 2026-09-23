@@ -1,7 +1,13 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from "@/algorithms/graph/graph-model";
-import type { EdgeVisualState, Graph, GraphEdge, GraphStep, NodeVisualState } from "@/algorithms/graph/types";
+import type {
+  EdgeVisualState,
+  Graph,
+  GraphEdge,
+  GraphStep,
+  NodeVisualState,
+} from "@/algorithms/graph/types";
 
 export type EditorMode = "select" | "add-node" | "add-edge" | "delete";
 
@@ -24,13 +30,48 @@ interface GraphCanvasProps {
 
 const R = 22;
 
-const NODE_STYLE: Record<NodeVisualState, { fill: string; stroke: string; dash?: string; width: number; text: string }> = {
-  unvisited: { fill: "var(--card)", stroke: "var(--muted-foreground)", width: 1.5, text: "var(--foreground)" },
-  discovered: { fill: "var(--card)", stroke: "var(--viz-compare)", dash: "5 4", width: 3, text: "var(--foreground)" },
-  queued: { fill: "var(--card)", stroke: "var(--viz-compare)", dash: "5 4", width: 3, text: "var(--foreground)" },
-  current: { fill: "var(--viz-active)", stroke: "var(--viz-active)", width: 3, text: "var(--primary-foreground)" },
-  visited: { fill: "var(--viz-sorted)", stroke: "var(--viz-sorted)", width: 2, text: "var(--primary-foreground)" },
-  path: { fill: "var(--viz-pivot)", stroke: "var(--viz-pivot)", width: 3, text: "var(--primary-foreground)" },
+const NODE_STYLE: Record<
+  NodeVisualState,
+  { fill: string; stroke: string; dash?: string; width: number; text: string }
+> = {
+  unvisited: {
+    fill: "var(--card)",
+    stroke: "var(--muted-foreground)",
+    width: 1.5,
+    text: "var(--foreground)",
+  },
+  discovered: {
+    fill: "var(--card)",
+    stroke: "var(--viz-compare)",
+    dash: "5 4",
+    width: 3,
+    text: "var(--foreground)",
+  },
+  queued: {
+    fill: "var(--card)",
+    stroke: "var(--viz-compare)",
+    dash: "5 4",
+    width: 3,
+    text: "var(--foreground)",
+  },
+  current: {
+    fill: "var(--viz-active)",
+    stroke: "var(--viz-active)",
+    width: 3,
+    text: "var(--primary-foreground)",
+  },
+  visited: {
+    fill: "var(--viz-sorted)",
+    stroke: "var(--viz-sorted)",
+    width: 2,
+    text: "var(--primary-foreground)",
+  },
+  path: {
+    fill: "var(--viz-pivot)",
+    stroke: "var(--viz-pivot)",
+    width: 3,
+    text: "var(--primary-foreground)",
+  },
 };
 
 const EDGE_STYLE: Record<EdgeVisualState, { stroke: string; width: number; dash?: string }> = {
@@ -50,7 +91,8 @@ function edgeGeometry(graph: Graph, edge: GraphEdge, R: number) {
   const ux = dx / len;
   const uy = dy / len;
   // Offset directed edges that have an opposite twin so both stay visible.
-  const twin = edge.directed && graph.edges.some((e) => e.source === edge.target && e.target === edge.source);
+  const twin =
+    edge.directed && graph.edges.some((e) => e.source === edge.target && e.target === edge.source);
   const off = twin ? 8 : 0;
   const ox = -uy * off;
   const oy = ux * off;
@@ -58,7 +100,16 @@ function edgeGeometry(graph: Graph, edge: GraphEdge, R: number) {
   const y1 = a.y + uy * R + oy;
   const x2 = b.x - ux * (R + (edge.directed ? 4 : 0)) + ox;
   const y2 = b.y - uy * (R + (edge.directed ? 4 : 0)) + oy;
-  return { x1, y1, x2, y2, ux, uy, mx: (x1 + x2) / 2 - uy * (twin ? 10 : 0), my: (y1 + y2) / 2 + ux * (twin ? 10 : 0) };
+  return {
+    x1,
+    y1,
+    x2,
+    y2,
+    ux,
+    uy,
+    mx: (x1 + x2) / 2 - uy * (twin ? 10 : 0),
+    my: (y1 + y2) / 2 + ux * (twin ? 10 : 0),
+  };
 }
 
 export function GraphCanvas(props: GraphCanvasProps) {
@@ -160,13 +211,46 @@ export function GraphCanvas(props: GraphCanvasProps) {
             className={editable ? "cursor-pointer" : undefined}
           >
             <line x1={g.x1} y1={g.y1} x2={g.x2} y2={g.y2} stroke="transparent" strokeWidth={18} />
-            {selected && <line x1={g.x1} y1={g.y1} x2={g.x2} y2={g.y2} stroke="var(--ring)" strokeWidth={s.width + 6} strokeOpacity={0.4} />}
-            <line x1={g.x1} y1={g.y1} x2={g.x2} y2={g.y2} stroke={s.stroke} strokeWidth={s.width} strokeDasharray={s.dash} />
+            {selected && (
+              <line
+                x1={g.x1}
+                y1={g.y1}
+                x2={g.x2}
+                y2={g.y2}
+                stroke="var(--ring)"
+                strokeWidth={s.width + 6}
+                strokeOpacity={0.4}
+              />
+            )}
+            <line
+              x1={g.x1}
+              y1={g.y1}
+              x2={g.x2}
+              y2={g.y2}
+              stroke={s.stroke}
+              strokeWidth={s.width}
+              strokeDasharray={s.dash}
+            />
             {edge.directed && <polygon points={arrow} fill={s.stroke} />}
             {props.showWeights && (
               <g transform={`translate(${g.mx} ${g.my}) scale(${k})`}>
-                <rect x={-14} y={-10} width={28} height={20} rx={4} fill="var(--background)" stroke="var(--border)" />
-                <text x={0} y={4} textAnchor="middle" fontSize="12" className="font-mono" fill="var(--foreground)">
+                <rect
+                  x={-14}
+                  y={-10}
+                  width={28}
+                  height={20}
+                  rx={4}
+                  fill="var(--background)"
+                  stroke="var(--border)"
+                />
+                <text
+                  x={0}
+                  y={4}
+                  textAnchor="middle"
+                  fontSize="12"
+                  className="font-mono"
+                  fill="var(--foreground)"
+                >
                   {edge.weight}
                 </text>
               </g>
@@ -187,28 +271,67 @@ export function GraphCanvas(props: GraphCanvasProps) {
             onPointerDown={(e) => onNodePointerDown(e, node.id)}
             onPointerMove={onNodePointerMove}
             onPointerUp={(e) => onNodePointerUp(e, node.id)}
-            className={editable ? (mode === "select" ? "cursor-grab" : "cursor-pointer") : undefined}
+            className={
+              editable ? (mode === "select" ? "cursor-grab" : "cursor-pointer") : undefined
+            }
           >
             <circle r={R + 12} fill="transparent" />
-            {selected && <circle r={R + 7} fill="none" stroke="var(--ring)" strokeWidth={3} strokeDasharray="3 3" />}
-            {state === "current" && <circle r={R + 5} fill="none" stroke="var(--viz-active)" strokeWidth={2} />}
-            <circle r={R} fill={s.fill} stroke={s.stroke} strokeWidth={s.width} strokeDasharray={s.dash} />
-            <text y={5} textAnchor="middle" fontSize="15" fontWeight={600} fill={s.text} className="font-mono">
+            {selected && (
+              <circle
+                r={R + 7}
+                fill="none"
+                stroke="var(--ring)"
+                strokeWidth={3}
+                strokeDasharray="3 3"
+              />
+            )}
+            {state === "current" && (
+              <circle r={R + 5} fill="none" stroke="var(--viz-active)" strokeWidth={2} />
+            )}
+            <circle
+              r={R}
+              fill={s.fill}
+              stroke={s.stroke}
+              strokeWidth={s.width}
+              strokeDasharray={s.dash}
+            />
+            <text
+              y={5}
+              textAnchor="middle"
+              fontSize="15"
+              fontWeight={600}
+              fill={s.text}
+              className="font-mono"
+            >
               {node.label}
             </text>
             {state === "visited" && (
-              <text x={R - 4} y={-R + 6} fontSize="12" fill="var(--viz-sorted)" fontWeight={700}>✓</text>
+              <text x={R - 4} y={-R + 6} fontSize="12" fill="var(--viz-sorted)" fontWeight={700}>
+                ✓
+              </text>
             )}
             {(props.source === node.id || props.target === node.id) && (
               <g transform={`translate(${-R + 2} ${-R + 2})`}>
                 <rect x={-9} y={-9} width={18} height={18} rx={4} fill="var(--foreground)" />
-                <text y={4} textAnchor="middle" fontSize="11" fontWeight={700} fill="var(--background)">
+                <text
+                  y={4}
+                  textAnchor="middle"
+                  fontSize="11"
+                  fontWeight={700}
+                  fill="var(--background)"
+                >
                   {props.source === node.id ? "S" : "T"}
                 </text>
               </g>
             )}
             {dist !== undefined && (
-              <text y={R + 16} textAnchor="middle" fontSize="12" className="font-mono" fill="var(--muted-foreground)">
+              <text
+                y={R + 16}
+                textAnchor="middle"
+                fontSize="12"
+                className="font-mono"
+                fill="var(--muted-foreground)"
+              >
                 d={dist === Infinity ? "∞" : dist}
               </text>
             )}
@@ -221,18 +344,50 @@ export function GraphCanvas(props: GraphCanvasProps) {
 
 export function GraphLegend() {
   const items: { label: string; swatch: React.ReactNode }[] = [
-    { label: "Unvisited", swatch: <circle r={7} fill="var(--card)" stroke="var(--muted-foreground)" strokeWidth={1.5} /> },
-    { label: "Discovered / in frontier (dashed)", swatch: <circle r={7} fill="var(--card)" stroke="var(--viz-compare)" strokeWidth={2.5} strokeDasharray="3 2" /> },
-    { label: "Current (double ring)", swatch: <><circle r={8} fill="none" stroke="var(--viz-active)" /><circle r={6} fill="var(--viz-active)" /></> },
+    {
+      label: "Unvisited",
+      swatch: (
+        <circle r={7} fill="var(--card)" stroke="var(--muted-foreground)" strokeWidth={1.5} />
+      ),
+    },
+    {
+      label: "Discovered / in frontier (dashed)",
+      swatch: (
+        <circle
+          r={7}
+          fill="var(--card)"
+          stroke="var(--viz-compare)"
+          strokeWidth={2.5}
+          strokeDasharray="3 2"
+        />
+      ),
+    },
+    {
+      label: "Current (double ring)",
+      swatch: (
+        <>
+          <circle r={8} fill="none" stroke="var(--viz-active)" />
+          <circle r={6} fill="var(--viz-active)" />
+        </>
+      ),
+    },
     { label: "Visited / finalized (✓)", swatch: <circle r={7} fill="var(--viz-sorted)" /> },
     { label: "Final path (thick)", swatch: <circle r={7} fill="var(--viz-pivot)" /> },
-    { label: "S = source, T = target", swatch: <rect x={-7} y={-7} width={14} height={14} rx={3} fill="var(--foreground)" /> },
+    {
+      label: "S = source, T = target",
+      swatch: <rect x={-7} y={-7} width={14} height={14} rx={3} fill="var(--foreground)" />,
+    },
   ];
   return (
-    <ul className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-muted-foreground" aria-label="Legend">
+    <ul
+      className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-muted-foreground"
+      aria-label="Legend"
+    >
       {items.map((item) => (
         <li key={item.label} className="flex items-center gap-1.5">
-          <svg width={18} height={18} viewBox="-9 -9 18 18" aria-hidden="true">{item.swatch}</svg>
+          <svg width={18} height={18} viewBox="-9 -9 18 18" aria-hidden="true">
+            {item.swatch}
+          </svg>
           {item.label}
         </li>
       ))}

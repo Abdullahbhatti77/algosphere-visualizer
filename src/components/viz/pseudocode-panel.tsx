@@ -8,8 +8,31 @@ interface PseudocodePanelProps {
 }
 
 const KEYWORDS = new Set([
-  "if", "else", "for", "each", "while", "do", "return", "then", "to", "downto", "repeat", "until",
-  "and", "or", "not", "in", "is", "null", "break", "continue", "function", "procedure", "error", "swap", "mod",
+  "if",
+  "else",
+  "for",
+  "each",
+  "while",
+  "do",
+  "return",
+  "then",
+  "to",
+  "downto",
+  "repeat",
+  "until",
+  "and",
+  "or",
+  "not",
+  "in",
+  "is",
+  "null",
+  "break",
+  "continue",
+  "function",
+  "procedure",
+  "error",
+  "swap",
+  "mod",
 ]);
 
 /** Minimal highlighter: keywords, numbers, and // comments. */
@@ -20,12 +43,32 @@ function highlight(line: string): ReactNode[] {
   const comment = commentAt === -1 ? "" : line.slice(commentAt);
   code.split(/(\b[A-Za-z_]+\b|\b\d+\b)/).forEach((part, i) => {
     if (!part) return;
-    if (KEYWORDS.has(part)) out.push(<span key={i} className="text-primary">{part}</span>);
-    else if (/^\d+$/.test(part)) out.push(<span key={i} className="text-viz-pivot">{part}</span>);
-    else if (/^[A-Z]{3,}$/.test(part)) out.push(<span key={i} className="text-viz-swap">{part}</span>);
+    if (KEYWORDS.has(part))
+      out.push(
+        <span key={i} className="text-primary">
+          {part}
+        </span>,
+      );
+    else if (/^\d+$/.test(part))
+      out.push(
+        <span key={i} className="text-viz-pivot">
+          {part}
+        </span>,
+      );
+    else if (/^[A-Z]{3,}$/.test(part))
+      out.push(
+        <span key={i} className="text-viz-swap">
+          {part}
+        </span>,
+      );
     else out.push(part);
   });
-  if (comment) out.push(<span key="c" className="italic text-muted-foreground">{comment}</span>);
+  if (comment)
+    out.push(
+      <span key="c" className="italic text-muted-foreground">
+        {comment}
+      </span>,
+    );
   return out;
 }
 

@@ -28,10 +28,15 @@ export class MinHeap<T> {
 
   /** Sorted snapshot (for display only). */
   snapshot(): { value: T; priority: number }[] {
-    return [...this.items].sort((a, b) => this.cmp(a, b)).map(({ value, priority }) => ({ value, priority }));
+    return [...this.items]
+      .sort((a, b) => this.cmp(a, b))
+      .map(({ value, priority }) => ({ value, priority }));
   }
 
-  private cmp(a: { priority: number; seq: number; tie: string }, b: { priority: number; seq: number; tie: string }): number {
+  private cmp(
+    a: { priority: number; seq: number; tie: string },
+    b: { priority: number; seq: number; tie: string },
+  ): number {
     if (a.priority !== b.priority) return a.priority - b.priority;
     if (a.tie !== b.tie) return a.tie < b.tie ? -1 : 1;
     return a.seq - b.seq;

@@ -14,7 +14,10 @@ export function SimpleComplexity({ rows, notes }: SimpleComplexityProps) {
       <CardContent>
         <dl>
           {rows.map((row) => (
-            <div key={row.label} className="flex items-center justify-between gap-3 border-b border-border py-1.5 last:border-0">
+            <div
+              key={row.label}
+              className="flex items-center justify-between gap-3 border-b border-border py-1.5 last:border-0"
+            >
               <dt className="text-xs text-muted-foreground">{row.label}</dt>
               <dd className="font-mono text-xs">{row.value}</dd>
             </div>
@@ -33,8 +36,13 @@ export function StatGrid({ items }: { items: { label: string; value: string | nu
   return (
     <dl className="grid min-w-0 grid-cols-2 gap-2">
       {items.map((item) => (
-        <div key={item.label} className="min-w-0 rounded-md border border-border bg-surface px-3 py-2">
-          <dt className="truncate text-[11px] uppercase tracking-wide text-muted-foreground">{item.label}</dt>
+        <div
+          key={item.label}
+          className="min-w-0 rounded-md border border-border bg-surface px-3 py-2"
+        >
+          <dt className="truncate text-[11px] uppercase tracking-wide text-muted-foreground">
+            {item.label}
+          </dt>
           <dd className="font-mono text-sm tabular-nums">{item.value}</dd>
         </div>
       ))}

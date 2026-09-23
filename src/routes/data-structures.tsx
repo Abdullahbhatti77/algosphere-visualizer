@@ -51,7 +51,9 @@ function DataStructuresPage() {
                 aria-current={e.id === active.id ? "page" : undefined}
                 className={cn(
                   "-mb-px inline-flex min-h-10 items-center whitespace-nowrap border-b-2 px-3 text-sm",
-                  e.id === active.id ? "border-primary font-medium text-foreground" : "border-transparent text-muted-foreground hover:text-foreground",
+                  e.id === active.id
+                    ? "border-primary font-medium text-foreground"
+                    : "border-transparent text-muted-foreground hover:text-foreground",
                 )}
               >
                 {e.displayName}

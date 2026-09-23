@@ -6,7 +6,15 @@ import { describe, expect, it } from "vitest";
 
 import { StepController, type Scheduler } from "./core/step-controller";
 import { formatStat, resolveStats } from "./core/stats";
-import { buildTree, emptyTree, inOrder, insert, isValidBST, remove, search } from "./data-structures/bst";
+import {
+  buildTree,
+  emptyTree,
+  inOrder,
+  insert,
+  isValidBST,
+  remove,
+  search,
+} from "./data-structures/bst";
 import { seededRandom } from "./data-structures/types";
 import { createQueue, dequeue, enqueue, peekQueue, queueValues } from "./data-structures/queue";
 import { createStack, peek, pop, push } from "./data-structures/stack";
@@ -138,7 +146,8 @@ function referenceDistances(g: Graph, source: string): Record<string, number> {
   for (let i = 0; i < g.nodes.length; i++) {
     for (const e of g.edges) {
       if (d[e.source]! + e.weight < d[e.target]!) d[e.target] = d[e.source]! + e.weight;
-      if (!e.directed && d[e.target]! + e.weight < d[e.source]!) d[e.source] = d[e.target]! + e.weight;
+      if (!e.directed && d[e.target]! + e.weight < d[e.source]!)
+        d[e.source] = d[e.target]! + e.weight;
     }
   }
   return d;
@@ -166,14 +175,30 @@ describe("audit: graph editor", () => {
     expect(setEdgeWeight(g, g.edges[0]!.id, -3).ok).toBe(false);
   });
   it("directed graphs allow both directions; converting back collapses to the lighter edge", () => {
-    const g = graphFrom(["A", "B"], [["A", "B", 5], ["B", "A", 2]], true);
+    const g = graphFrom(
+      ["A", "B"],
+      [
+        ["A", "B", 5],
+        ["B", "A", 2],
+      ],
+      true,
+    );
     expect(g.edges).toHaveLength(2);
     const u = setAllDirected(g, false);
     expect(u.edges).toHaveLength(1);
     expect(u.edges[0]!.weight).toBe(2);
   });
   it("removing a node removes its incident edges", () => {
-    const g = removeNode(graphFrom(["A", "B", "C"], [["A", "B", 1], ["B", "C", 1]]), "B");
+    const g = removeNode(
+      graphFrom(
+        ["A", "B", "C"],
+        [
+          ["A", "B", 1],
+          ["B", "C", 1],
+        ],
+      ),
+      "B",
+    );
     expect(g.nodes.map((n) => n.id)).toEqual(["A", "C"]);
     expect(g.edges).toEqual([]);
   });
@@ -200,8 +225,15 @@ describe("audit: BFS / DFS / Dijkstra", () => {
     }
   });
   it("disconnected components are never reached", () => {
-    const g = graphFrom(["A", "B", "C", "D"], [["A", "B", 1], ["C", "D", 1]]);
-    for (const run of [bfs, dfs]) expect(run(g, { source: "A" }).at(-1)!.order.sort()).toEqual(["A", "B"]);
+    const g = graphFrom(
+      ["A", "B", "C", "D"],
+      [
+        ["A", "B", 1],
+        ["C", "D", 1],
+      ],
+    );
+    for (const run of [bfs, dfs])
+      expect(run(g, { source: "A" }).at(-1)!.order.sort()).toEqual(["A", "B"]);
     const d = dijkstra(g, { source: "A", target: "D" }).at(-1)!;
     expect(d.path ?? []).toEqual([]);
     expect(d.distances!["D"]).toBe(Infinity);
@@ -237,7 +269,8 @@ describe("audit: A*", () => {
     g = setEndpoint(setEndpoint(g, "start", { row: 2, col: 2 }), "target", { row: 2, col: 3 });
     expect(astar(g, "manhattan").path!.length).toBe(2);
     let walled = createGrid(5, 5);
-    for (let r = 0; r < 5; r++) for (let c = 0; c < 5; c++) walled = setWall(walled, { row: r, col: c }, true);
+    for (let r = 0; r < 5; r++)
+      for (let c = 0; c < 5; c++) walled = setWall(walled, { row: r, col: c }, true);
     const res = astar(walled, "euclidean");
     expect(res.path).toBeNull();
     expect(res.steps.at(-1)!.explanation.length).toBeGreaterThan(0);
@@ -360,7 +393,9 @@ function fakeClock() {
   const advance = (ms: number) => {
     const end = now + ms;
     for (;;) {
-      const due = [...timers.entries()].filter(([, t]) => t.at <= end).sort((a, b) => a[1].at - b[1].at || a[0] - b[0])[0];
+      const due = [...timers.entries()]
+        .filter(([, t]) => t.at <= end)
+        .sort((a, b) => a[1].at - b[1].at || a[0] - b[0])[0];
       if (!due) break;
       timers.delete(due[0]);
       now = due[1].at;
@@ -428,7 +463,10 @@ describe("audit: statistics formatting", () => {
   });
   it("resolveStats keeps only and exactly the declared ids, in order", () => {
     const out = resolveStats(["size", "swaps"], { swaps: 3, comparisons: 9 });
-    expect(out.map((s) => [s.id, s.value])).toEqual([["size", "—"], ["swaps", "3"]]);
+    expect(out.map((s) => [s.id, s.value])).toEqual([
+      ["size", "—"],
+      ["swaps", "3"],
+    ]);
   });
 });
 
@@ -457,14 +495,27 @@ describe("audit: documentation completeness", () => {
 
 describe("audit: documented complexity claims hold on this implementation", () => {
   const comps = (id: string, input: number[]) =>
-    sortingAlgorithms.find((a) => a.id === id)!.generate(input).at(-1)!.metrics.comparisons;
+    sortingAlgorithms
+      .find((a) => a.id === id)!
+      .generate(input)
+      .at(-1)!.metrics.comparisons;
   it("bubble sort early exit: n − 1 comparisons on sorted input", () => {
     expect(comps("bubble", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])).toBe(9);
   });
   it("quick sort degrades to n(n−1)/2 comparisons on sorted and all-equal input", () => {
     const n = 20;
-    expect(comps("quick", Array.from({ length: n }, (_, i) => i))).toBe((n * (n - 1)) / 2);
-    expect(comps("quick", Array.from({ length: n }, () => 7))).toBe((n * (n - 1)) / 2);
+    expect(
+      comps(
+        "quick",
+        Array.from({ length: n }, (_, i) => i),
+      ),
+    ).toBe((n * (n - 1)) / 2);
+    expect(
+      comps(
+        "quick",
+        Array.from({ length: n }, () => 7),
+      ),
+    ).toBe((n * (n - 1)) / 2);
   });
   it("merge sort stays within n⌈log2 n⌉ comparisons", () => {
     for (let seed = 1; seed < 10; seed++) {

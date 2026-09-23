@@ -54,7 +54,12 @@ export function validateWeight(weight: number): string | null {
 }
 
 /** Whether an edge between a and b already exists, respecting direction. */
-export function findDuplicate(graph: Graph, source: string, target: string, directed: boolean): GraphEdge | undefined {
+export function findDuplicate(
+  graph: Graph,
+  source: string,
+  target: string,
+  directed: boolean,
+): GraphEdge | undefined {
   return graph.edges.find((e) => {
     const same = e.source === source && e.target === target;
     const reverse = e.source === target && e.target === source;
@@ -101,15 +106,26 @@ export function addEdge(
 export function setEdgeWeight(graph: Graph, id: string, weight: number): Result<Graph> {
   const error = validateWeight(weight);
   if (error) return { ok: false, error };
-  return { ok: true, value: { ...graph, edges: graph.edges.map((e) => (e.id === id ? { ...e, weight } : e)) } };
+  return {
+    ok: true,
+    value: { ...graph, edges: graph.edges.map((e) => (e.id === id ? { ...e, weight } : e)) },
+  };
 }
 
 export function setAllDirected(graph: Graph, directed: boolean): Graph {
-  if (directed) return { ...graph, edges: graph.edges.map((e) => ({ ...e, directed: true, id: `${e.source}>${e.target}` })) };
+  if (directed)
+    return {
+      ...graph,
+      edges: graph.edges.map((e) => ({ ...e, directed: true, id: `${e.source}>${e.target}` })),
+    };
   // Converting to undirected: collapse opposite pairs, keeping the first (lower weight wins).
   const kept: GraphEdge[] = [];
   for (const e of graph.edges) {
-    const other = kept.find((k) => (k.source === e.target && k.target === e.source) || (k.source === e.source && k.target === e.target));
+    const other = kept.find(
+      (k) =>
+        (k.source === e.target && k.target === e.source) ||
+        (k.source === e.source && k.target === e.target),
+    );
     if (other) {
       other.weight = Math.min(other.weight, e.weight);
       continue;
@@ -138,7 +154,9 @@ export function buildAdjacency(graph: Graph): Map<string, Neighbor[]> {
     if (!e.directed) adj.get(e.target)!.push({ node: e.source, edge: e });
   }
   for (const list of adj.values()) {
-    list.sort((a, b) => (labelOf.get(a.node) ?? a.node).localeCompare(labelOf.get(b.node) ?? b.node));
+    list.sort((a, b) =>
+      (labelOf.get(a.node) ?? a.node).localeCompare(labelOf.get(b.node) ?? b.node),
+    );
   }
   return adj;
 }
@@ -147,10 +165,20 @@ export function hasNegativeWeight(graph: Graph): boolean {
   return graph.edges.some((e) => e.weight < 0 || !Number.isFinite(e.weight));
 }
 
-function build(nodes: [string, number, number][], edges: [string, string, number][], directed: boolean): Graph {
+function build(
+  nodes: [string, number, number][],
+  edges: [string, string, number][],
+  directed: boolean,
+): Graph {
   return {
     nodes: nodes.map(([id, x, y]) => ({ id, label: id, x, y })),
-    edges: edges.map(([s, t, w]) => ({ id: `${s}${directed ? ">" : "-"}${t}`, source: s, target: t, directed, weight: w })),
+    edges: edges.map(([s, t, w]) => ({
+      id: `${s}${directed ? ">" : "-"}${t}`,
+      source: s,
+      target: t,
+      directed,
+      weight: w,
+    })),
   };
 }
 

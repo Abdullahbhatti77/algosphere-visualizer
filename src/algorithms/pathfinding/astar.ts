@@ -67,14 +67,20 @@ export function astar(grid: Grid, heuristicId: HeuristicId): AStarResult {
   const heap = new MinHeap<string>();
   const metrics = { expanded: 0, neighborChecks: 0, openPushes: 0 };
   let current: string | null = null;
-  let path: string[] = [];
+  const path: string[] = [];
 
   const scoreOf = (k: string): CellScore => {
     const gg = g.get(k)!;
     const hh = hv.get(k)!;
     return { g: gg, h: round(hh), f: round(gg + hh) };
   };
-  const emit = (type: GridStepType, explanation: string, codeLine: number, focus: string | null = null, found: boolean | null = null) => {
+  const emit = (
+    type: GridStepType,
+    explanation: string,
+    codeLine: number,
+    focus: string | null = null,
+    found: boolean | null = null,
+  ) => {
     const openList = [...openSet].map((k) => ({ key: k, ...scoreOf(k) }));
     openList.sort((a, b) => a.f - b.f || b.g - a.g || a.key.localeCompare(b.key));
     steps.push({
@@ -106,7 +112,11 @@ export function astar(grid: Grid, heuristicId: HeuristicId): AStarResult {
   g.set(sk, 0);
   hv.set(sk, h(grid.start, grid.target));
   push(sk);
-  emit("init", `Add start ${sk} to the open set with g = 0, h = ${round(hv.get(sk)!)}. For A*, f(n) = g(n) + h(n).`, 0);
+  emit(
+    "init",
+    `Add start ${sk} to the open set with g = 0, h = ${round(hv.get(sk)!)}. For A*, f(n) = g(n) + h(n).`,
+    0,
+  );
 
   while (heap.size > 0) {
     const { value: k } = heap.pop()!;
@@ -128,15 +138,35 @@ export function astar(grid: Grid, heuristicId: HeuristicId): AStarResult {
       rev.reverse();
       for (const key of rev) {
         path.push(key);
-        emit("path", `Path reconstruction: step ${path.length} of ${rev.length} (${key}).`, 3, key, true);
+        emit(
+          "path",
+          `Path reconstruction: step ${path.length} of ${rev.length} (${key}).`,
+          3,
+          key,
+          true,
+        );
       }
       current = null;
-      emit("done", `Path found: ${rev.length - 1} moves, ${metrics.expanded} cells expanded.`, 3, null, true);
-      return { steps, scores: Object.fromEntries([...g.keys()].map((key) => [key, scoreOf(key)])), path: rev.map((r) => cellOf.get(r)!) };
+      emit(
+        "done",
+        `Path found: ${rev.length - 1} moves, ${metrics.expanded} cells expanded.`,
+        3,
+        null,
+        true,
+      );
+      return {
+        steps,
+        scores: Object.fromEntries([...g.keys()].map((key) => [key, scoreOf(key)])),
+        path: rev.map((r) => cellOf.get(r)!),
+      };
     }
     closed.add(k);
     metrics.expanded++;
-    emit("expand", `Current node ${k}: lowest f = ${s.g} + ${s.h} = ${s.f}. Move it to the closed set.`, 4);
+    emit(
+      "expand",
+      `Current node ${k}: lowest f = ${s.g} + ${s.h} = ${s.f}. Move it to the closed set.`,
+      4,
+    );
 
     for (const n of neighbors(grid, c)) {
       const nk = cellKey(n);
@@ -163,7 +193,12 @@ export function astar(grid: Grid, heuristicId: HeuristicId): AStarResult {
           nk,
         );
       } else {
-        emit("skip", `Neighbor ${nk}: g via ${k} would be ${tentative}, not better than ${old}.`, 8, nk);
+        emit(
+          "skip",
+          `Neighbor ${nk}: g via ${k} would be ${tentative}, not better than ${old}.`,
+          8,
+          nk,
+        );
       }
     }
   }
@@ -175,5 +210,9 @@ export function astar(grid: Grid, heuristicId: HeuristicId): AStarResult {
     null,
     false,
   );
-  return { steps, scores: Object.fromEntries([...g.keys()].map((key) => [key, scoreOf(key)])), path: null };
+  return {
+    steps,
+    scores: Object.fromEntries([...g.keys()].map((key) => [key, scoreOf(key)])),
+    path: null,
+  };
 }

@@ -33,7 +33,9 @@ const ROLE: Record<StackRole, { cls: string; tag: string }> = {
 };
 
 export function StackVisualizer() {
-  const r = useDSRunner<StackState, StackRole>(() => createStack(DEFAULT_STACK_CAPACITY, [12, 7, 33]));
+  const r = useDSRunner<StackState, StackRole>(() =>
+    createStack(DEFAULT_STACK_CAPACITY, [12, 7, 33]),
+  );
   const [text, setText] = useState("42");
   const [error, setError] = useState<string | null>(null);
   const s = r.shown;
@@ -48,7 +50,10 @@ export function StackVisualizer() {
     r.run(push(r.committed, p.values[0]!));
   };
 
-  const slots = Array.from({ length: s.capacity ?? Math.max(s.items.length, 1) }, (_, i) => s.items[i] ?? null);
+  const slots = Array.from(
+    { length: s.capacity ?? Math.max(s.items.length, 1) },
+    (_, i) => s.items[i] ?? null,
+  );
 
   return (
     <DSShell
@@ -57,7 +62,10 @@ export function StackVisualizer() {
       visual={
         <div className="flex justify-center py-2">
           <div className="w-full max-w-xs">
-            <ol aria-label={`Stack, ${s.items.length} items, bottom to top`} className="flex flex-col-reverse gap-1.5 rounded-b-md border-x-2 border-b-2 border-muted-foreground/60 px-2 pb-2 pt-6">
+            <ol
+              aria-label={`Stack, ${s.items.length} items, bottom to top`}
+              className="flex flex-col-reverse gap-1.5 rounded-b-md border-x-2 border-b-2 border-muted-foreground/60 px-2 pb-2 pt-6"
+            >
               {slots.map((item, i) => {
                 const role = item ? roles[item.id] : undefined;
                 const st = role ? ROLE[role] : null;
@@ -67,25 +75,45 @@ export function StackVisualizer() {
                       {i === top ? <b className="text-foreground">TOP →</b> : `[${i}]`}
                     </span>
                     {item ? (
-                      <span className={cn("flex h-9 flex-1 items-center justify-between rounded border-2 px-3 font-mono text-sm motion-safe:transition-all sm:h-10", st?.cls ?? "border-border bg-surface")}>
+                      <span
+                        className={cn(
+                          "flex h-9 flex-1 items-center justify-between rounded border-2 px-3 font-mono text-sm motion-safe:transition-all sm:h-10",
+                          st?.cls ?? "border-border bg-surface",
+                        )}
+                      >
                         {item.value}
-                        {st?.tag && <span className="text-[10px] font-sans font-semibold no-underline">{st.tag}</span>}
+                        {st?.tag && (
+                          <span className="text-[10px] font-sans font-semibold no-underline">
+                            {st.tag}
+                          </span>
+                        )}
                       </span>
                     ) : (
-                      <span className="flex h-9 flex-1 items-center justify-center rounded border border-dashed border-border text-[10px] text-muted-foreground sm:h-10">{s.items.length === 0 && i === 0 ? "empty" : ""}</span>
+                      <span className="flex h-9 flex-1 items-center justify-center rounded border border-dashed border-border text-[10px] text-muted-foreground sm:h-10">
+                        {s.items.length === 0 && i === 0 ? "empty" : ""}
+                      </span>
                     )}
                   </li>
                 );
               })}
             </ol>
-            <p className="mt-2 text-center text-xs text-muted-foreground">bottom · {s.items.length}/{s.capacity ?? `${MAX_STACK_ITEMS} max`}</p>
+            <p className="mt-2 text-center text-xs text-muted-foreground">
+              bottom · {s.items.length}/{s.capacity ?? `${MAX_STACK_ITEMS} max`}
+            </p>
           </div>
         </div>
       }
       legend={
-        <ul className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground" aria-label="Legend">
+        <ul
+          className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground"
+          aria-label="Legend"
+        >
           <LegendItem marker="+" label="Pushed" className="border-viz-active bg-viz-active/20" />
-          <LegendItem marker="−" label="Popped (dashed)" className="border-dashed border-viz-swap" />
+          <LegendItem
+            marker="−"
+            label="Popped (dashed)"
+            className="border-dashed border-viz-swap"
+          />
           <LegendItem marker="👁" label="Peeked" className="border-viz-compare" />
         </ul>
       }
@@ -93,18 +121,48 @@ export function StackVisualizer() {
         <>
           <div className="space-y-1.5">
             <Label htmlFor="stack-value">Value, 0–999</Label>
-            <Input id="stack-value" inputMode="numeric" value={text} onChange={(e) => setText(e.target.value)} onKeyDown={(e) => e.key === "Enter" && doPush()} aria-invalid={error ? true : undefined} aria-describedby="stack-help" />
-            <p id="stack-help" className={cn("text-xs", error ? "text-destructive" : "text-muted-foreground")} role={error ? "alert" : undefined}>{error ?? "Enter pushes this value."}</p>
+            <Input
+              id="stack-value"
+              inputMode="numeric"
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && doPush()}
+              aria-invalid={error ? true : undefined}
+              aria-describedby="stack-help"
+            />
+            <p
+              id="stack-help"
+              className={cn("text-xs", error ? "text-destructive" : "text-muted-foreground")}
+              role={error ? "alert" : undefined}
+            >
+              {error ?? "Enter pushes this value."}
+            </p>
           </div>
           <div className="grid grid-cols-3 gap-2">
             <Button onClick={doPush}>Push</Button>
-            <Button variant="outline" onClick={() => r.run(pop(r.committed))}>Pop</Button>
-            <Button variant="outline" onClick={() => r.run(peek(r.committed))}>Peek</Button>
+            <Button variant="outline" onClick={() => r.run(pop(r.committed))}>
+              Pop
+            </Button>
+            <Button variant="outline" onClick={() => r.run(peek(r.committed))}>
+              Peek
+            </Button>
           </div>
           <div className="grid grid-cols-3 gap-2">
-            <Button variant="secondary" onClick={() => r.run(push(r.committed, randomValues(1)[0]!))}>Push random</Button>
-            <Button variant="secondary" onClick={() => r.replace(createStack(r.committed.capacity, randomValues(5)))}>Random fill</Button>
-            <Button variant="secondary" onClick={() => r.run(clearStack(r.committed))}>Clear</Button>
+            <Button
+              variant="secondary"
+              onClick={() => r.run(push(r.committed, randomValues(1)[0]!))}
+            >
+              Push random
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => r.replace(createStack(r.committed.capacity, randomValues(5)))}
+            >
+              Random fill
+            </Button>
+            <Button variant="secondary" onClick={() => r.run(clearStack(r.committed))}>
+              Clear
+            </Button>
           </div>
           <div className="flex items-center gap-2">
             <Switch
@@ -112,10 +170,17 @@ export function StackVisualizer() {
               checked={r.committed.capacity !== null}
               onCheckedChange={(on) => {
                 const cap = on ? DEFAULT_STACK_CAPACITY : null;
-                r.replace(createStack(cap, r.committed.items.slice(0, cap ?? MAX_STACK_ITEMS).map((i) => i.value)));
+                r.replace(
+                  createStack(
+                    cap,
+                    r.committed.items.slice(0, cap ?? MAX_STACK_ITEMS).map((i) => i.value),
+                  ),
+                );
               }}
             />
-            <Label htmlFor="stack-bounded" className="text-sm">Bounded (capacity {DEFAULT_STACK_CAPACITY})</Label>
+            <Label htmlFor="stack-bounded" className="text-sm">
+              Bounded (capacity {DEFAULT_STACK_CAPACITY})
+            </Label>
           </div>
         </>
       }
@@ -124,7 +189,10 @@ export function StackVisualizer() {
       status={r.step?.status ?? null}
       pseudocode={r.result?.pseudocode ?? null}
       codeLine={r.step?.codeLine}
-      contents={{ label: "Bottom → top", text: s.items.length ? s.items.map((i) => i.value).join(", ") : "(empty)" }}
+      contents={{
+        label: "Bottom → top",
+        text: s.items.length ? s.items.map((i) => i.value).join(", ") : "(empty)",
+      }}
       stats={{
         ids: entry.stats.filter((id) => id !== "capacity" || s.capacity !== null),
         values: {

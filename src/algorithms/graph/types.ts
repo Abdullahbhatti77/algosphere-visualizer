@@ -3,12 +3,7 @@
  */
 
 export type NodeVisualState =
-  | "unvisited"
-  | "discovered"
-  | "queued"
-  | "current"
-  | "visited"
-  | "path";
+  "unvisited" | "discovered" | "queued" | "current" | "visited" | "path";
 
 export type EdgeVisualState = "idle" | "considered" | "tree" | "relaxed" | "path";
 

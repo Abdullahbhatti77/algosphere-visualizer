@@ -54,7 +54,8 @@ export function validateComplexity(meta: ComplexityMeta): string[] {
     if (!isBigO(meta[key])) problems.push(`${meta.name}: ${key} "${meta[key]}" is not Big-O`);
   }
   for (const op of meta.operations ?? []) {
-    if (!isBigO(op.average) || !isBigO(op.worst)) problems.push(`${meta.name}: ${op.operation} bounds invalid`);
+    if (!isBigO(op.average) || !isBigO(op.worst))
+      problems.push(`${meta.name}: ${op.operation} bounds invalid`);
   }
   return problems;
 }
